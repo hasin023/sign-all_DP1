@@ -12,9 +12,9 @@ export default function Home() {
       <Head>
         <title>Sign All</title>
       </Head>
-      <div className={`${poppins.className} min-h-screen bg-box`}>
+      <div className={`${poppins.className} min-h-screen`}>
         <Navbar />
-        <main className='max-w-7xl mx-auto px-4 py-24 grid md:grid-cols-2 gap-12 justify-between items-center'>
+        <main className='max-w-7xl mx-auto px-4 py-24  gap-12 justify-between items-center'>
           <LandingPage />
         </main>
       </div>

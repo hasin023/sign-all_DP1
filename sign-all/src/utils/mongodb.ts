@@ -1,6 +1,6 @@
 import { ConnectionStates, connect } from 'mongoose'
 
-let connection: { isConnected?: ConnectionStates } = {};
+const connection: { isConnected?: ConnectionStates } = {};
 
 
 export async function dbConnect() {
