@@ -1,122 +1,210 @@
-import Navbar from "@/components/common/Navbar";
-import React, { useRef, useState, useEffect } from "react";
+import Navbar from "@/components/common/Navbar"
+import React, { useRef, useState } from "react"
 
-const SignDetection = () => {
-  const videoRef1 = useRef(null);  // First camera
-  const videoRef2 = useRef(null);  // Second camera
-  const [isCameraActive, setIsCameraActive] = useState(false);
+interface VideoRefElement extends HTMLVideoElement {
+  srcObject: MediaStream | null
+}
 
-  // Start the first camera immediately when the component mounts
-  useEffect(() => {
-    navigator.mediaDevices
-      .getUserMedia({ video: true })
-      .then((stream) => {
-        let video1 = videoRef1.current;
-        if (video1) {
-          video1.srcObject = stream;
-          video1.play();
-        }
+const SignDetection: React.FC = () => {
+  const videoRef1 = useRef<VideoRefElement | null>(null)
+  const videoRef2 = useRef<VideoRefElement | null>(null)
+  const [isCameraActive, setIsCameraActive] = useState<boolean>(false)
+  const [stream, setStream] = useState<MediaStream | null>(null)
+
+  const startCamera = async (): Promise<void> => {
+    try {
+      const mediaStream: MediaStream =
+        await navigator.mediaDevices.getUserMedia({
+          video: true,
+        })
+      setStream(mediaStream)
+
+      if (videoRef1.current) {
+        videoRef1.current.srcObject = mediaStream
+        await videoRef1.current.play()
+      }
+
+      if (videoRef2.current) {
+        videoRef2.current.srcObject = mediaStream
+        await videoRef2.current.play()
+      }
+
+      setIsCameraActive(true)
+    } catch (err) {
+      console.error("Error accessing the camera: ", err)
+    }
+  }
+
+  const stopCamera = (): void => {
+    if (stream) {
+      stream.getTracks().forEach((track) => {
+        track.stop()
       })
-      .catch((err) => {
-        console.error("Error accessing the first camera: ", err);
-      });
-  }, []);
+      setStream(null)
+    }
 
-  // Function to start both cameras when the button is clicked
-  const startCamera = () => {
-    console.log("Attempting to access the camera...");
-    navigator.mediaDevices
-      .getUserMedia({ video: true })
-      .then((stream) => {
-        console.log("Camera accessed successfully!");
+    if (videoRef1.current) {
+      videoRef1.current.srcObject = null
+    }
+    if (videoRef2.current) {
+      videoRef2.current.srcObject = null
+    }
 
-        let video1 = videoRef1.current;
-        if (video1) {
-          video1.srcObject = stream;
-          video1.play();
-          console.log("First video stream started.");
-        }
-
-        let video2 = videoRef2.current;
-        if (video2) {
-          video2.srcObject = stream;
-          video2.play();
-          console.log("Second video stream started.");
-        }
-
-        setIsCameraActive(true);
-      })
-      .catch((err) => {
-        console.error("Error accessing the camera: ", err);
-      });
-  };
+    setIsCameraActive(false)
+  }
 
   return (
-    <div>
+    <div className='min-h-screen bg-gradient-to-b from-gray-50 to-gray-100'>
       <Navbar />
 
-      <div className="min-h-screen bg-gray-100 flex flex-col items-center pt-10">
-        <div className="text-center mb-6">
-          <h1 className="text-3xl font-bold mb-4">
-            Realtime ASL (American Sign Language) Detection
+      <main className='container mx-auto px-4 py-8'>
+        {/* Header Section */}
+        <div className='max-w-3xl mx-auto text-center mb-12'>
+          <h1 className='text-4xl font-bold text-gray-900 mb-4'>
+            ASL Recognition
           </h1>
-          <p className="text-lg">
-            Detect signs from camera feed in realtime. Use our tailored AI to
-            recognize sign language gestures and convert them into text.
+          <p className='text-lg text-gray-600 leading-relaxed'>
+            Experience real-time American Sign Language detection powered by
+            advanced AI. Start your camera to begin converting signs into text
+            instantly.
           </p>
         </div>
 
-        {/* Two video containers appear side by side after button click */}
-        <div className="flex space-x-4">
-          {/* First camera feed always visible */}
-          <div className="bg-black w-11/12 md:w-3/4 lg:w-1/2 h-64 rounded-lg shadow-lg relative">
-            <video
-              ref={videoRef1}
-              className="w-full h-full object-cover rounded-lg"
-              autoPlay
-              playsInline
-            ></video>
+        {/* Video Feeds Container */}
+        <div className='max-w-6xl mx-auto'>
+          <div
+            className={`grid gap-6 ${
+              isCameraActive ? "md:grid-cols-2" : "md:grid-cols-1"
+            }`}
+          >
+            {/* Main Video Feed */}
+            <div className='relative'>
+              <div className='bg-gray-900 rounded-xl overflow-hidden shadow-2xl aspect-video'>
+                <video
+                  ref={videoRef1}
+                  className='w-full h-full object-cover'
+                  autoPlay
+                  playsInline
+                  muted
+                />
 
-            {!isCameraActive && (
-              <div className="absolute inset-0 flex justify-center items-center">
-                <button
-                  onClick={startCamera}
-                  className="bg-blue-500 p-4 rounded-full shadow-lg hover:bg-blue-600 transition duration-300"
-                >
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    fill="white"
-                    viewBox="0 0 24 24"
-                    stroke="white"
-                    className="h-8 w-8"
+                {/* Camera Controls */}
+                {!isCameraActive ? (
+                  <div className='absolute inset-0 flex items-center justify-center bg-gray-900/50 backdrop-blur-sm'>
+                    <button
+                      onClick={startCamera}
+                      className='bg-blue-500 hover:bg-blue-600 text-white px-8 py-4 rounded-full shadow-lg transform transition-all duration-300 hover:scale-105 flex items-center gap-2'
+                      type='button'
+                      aria-label='Start camera'
+                    >
+                      <svg
+                        xmlns='http://www.w3.org/2000/svg'
+                        fill='none'
+                        viewBox='0 0 24 24'
+                        stroke='currentColor'
+                        className='w-6 h-6'
+                      >
+                        <path
+                          strokeLinecap='round'
+                          strokeLinejoin='round'
+                          strokeWidth={2}
+                          d='M15 10l4.5-4.5M19.5 5.5L15 10M19 11v10a2 2 0 01-2 2H7a2 2 0 01-2-2V5a2 2 0 012-2h7M7 15h7'
+                        />
+                      </svg>
+                      Start Camera
+                    </button>
+                  </div>
+                ) : (
+                  <button
+                    onClick={stopCamera}
+                    className='absolute top-4 right-4 bg-red-500/80 hover:bg-red-600 text-white p-2 rounded-full shadow-lg backdrop-blur-sm transition-all duration-300 hover:scale-105 group'
+                    type='button'
+                    aria-label='Stop camera'
                   >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth={2}
-                      d="M15 10l4.5-4.5M19.5 5.5L15 10M19 11v10a2 2 0 01-2 2H7a2 2 0 01-2-2V5a2 2 0 012-2h7M7 15h7"
-                    />
-                  </svg>
-                </button>
+                    <svg
+                      xmlns='http://www.w3.org/2000/svg'
+                      fill='none'
+                      viewBox='0 0 24 24'
+                      stroke='currentColor'
+                      className='w-6 h-6'
+                    >
+                      <path
+                        strokeLinecap='round'
+                        strokeLinejoin='round'
+                        strokeWidth={2}
+                        d='M6 18L18 6M6 6l12 12'
+                      />
+                    </svg>
+                  </button>
+                )}
+
+                {/* Status Indicator */}
+                <div className='absolute bottom-4 left-4 flex items-center gap-2'>
+                  <div
+                    className={`w-3 h-3 rounded-full ${
+                      isCameraActive ? "bg-green-500" : "bg-gray-500"
+                    }`}
+                  ></div>
+                  <span className='text-white text-sm font-medium'>
+                    {isCameraActive ? "Camera Active" : "Camera Inactive"}
+                  </span>
+                </div>
+              </div>
+            </div>
+
+            {/* Second Video Feed */}
+            {isCameraActive && (
+              <div className='relative'>
+                <div className='bg-gray-900 rounded-xl overflow-hidden shadow-2xl aspect-video'>
+                  <video
+                    ref={videoRef2}
+                    className='w-full h-full object-cover'
+                    autoPlay
+                    playsInline
+                    muted
+                  />
+                  {/* Processing Indicator */}
+                  <div className='absolute bottom-4 left-4 flex items-center gap-2'>
+                    <div className='w-3 h-3 rounded-full bg-blue-500 animate-pulse'></div>
+                    <span className='text-white text-sm font-medium'>
+                      Processing Feed
+                    </span>
+                  </div>
+                </div>
               </div>
             )}
           </div>
 
-          {/* Second camera feed - hidden until the camera is active */}
-          {isCameraActive && (
-            <div className="bg-black w-11/12 md:w-3/4 lg:w-1/2 h-64 rounded-lg shadow-lg relative">
-              <video
-                ref={videoRef2}
-                className="w-full h-full object-cover rounded-lg"
-                autoPlay
-                playsInline
-              ></video>
+          {/* Instructions Panel */}
+          <div className='mt-8 bg-white rounded-xl p-6 shadow-lg'>
+            <h2 className='text-xl font-semibold text-gray-900 mb-4'>
+              How to Use
+            </h2>
+            <div className='grid md:grid-cols-3 gap-4 text-gray-600'>
+              <div className='flex items-start gap-3'>
+                <div className='w-8 h-8 rounded-full bg-blue-100 flex items-center justify-center flex-shrink-0'>
+                  <span className='text-blue-600 font-medium'>1</span>
+                </div>
+                <p>Click the start button to activate your camera</p>
+              </div>
+              <div className='flex items-start gap-3'>
+                <div className='w-8 h-8 rounded-full bg-blue-100 flex items-center justify-center flex-shrink-0'>
+                  <span className='text-blue-600 font-medium'>2</span>
+                </div>
+                <p>Position yourself in frame and start signing</p>
+              </div>
+              <div className='flex items-start gap-3'>
+                <div className='w-8 h-8 rounded-full bg-blue-100 flex items-center justify-center flex-shrink-0'>
+                  <span className='text-blue-600 font-medium'>3</span>
+                </div>
+                <p>View the real-time text translation on screen</p>
+              </div>
             </div>
-          )}
+          </div>
         </div>
-      </div>
+      </main>
     </div>
-  );
-};
+  )
+}
 
-export default SignDetection;
+export default SignDetection
