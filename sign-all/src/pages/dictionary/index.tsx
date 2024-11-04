@@ -1,6 +1,6 @@
 import Navbar from "@/components/common/Navbar";
-import Searchbar from "@/components/ui/SearchBar";
-import Spinner from "@/components/ui/Spinner";
+import Searchbar from "@/components/common/Searchbar";
+import Spinner from "@/components/common/Spinner";
 import { Poppins } from "next/font/google";
 import Head from "next/head";
 import Link from "next/link";
