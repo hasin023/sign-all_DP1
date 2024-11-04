@@ -1,5 +1,5 @@
-import Navbar from "@/components/Navbar"
-import Searchbar from "@/components/Searchbar"
+import Navbar from "@/components/common/Navbar"
+import Searchbar from "@/components/common/Searchbar"
 import { Poppins } from "next/font/google"
 import Head from "next/head"
 import Link from "next/link"

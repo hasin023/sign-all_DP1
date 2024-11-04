@@ -1,5 +1,5 @@
 import AdminSearchbar from "@/components/admin/admin-searchbar"
-import Navbar from "@/components/Navbar"
+import Navbar from "@/components/common/Navbar"
 import { Poppins } from "next/font/google"
 import Head from "next/head"
 import Link from "next/link"
