@@ -22,7 +22,7 @@ const Hero = () => {
           dictionary, quizzes, and more.
         </p>
         <a
-          href='#learn-more'
+          href='detection'
           className='mt-4 inline-block bg-blue-500 text-white px-6 py-2 rounded hover:bg-blue-600'
         >
           Start Detection

@@ -1,11 +1,22 @@
 import Navbar from "../components/common/Navbar";
+import Image from "next/image";
+import Link from "next/link";
 
 export default function Login() {
   return (
     <main>
       <div className="min-h-screen bg-white flex flex-col">
-        <Navbar />
-        <div className="flex mt-32 justify-center items-center">
+          <Link href='/'>
+            <Image
+              src='/logo.png'
+              alt='Logo'
+              width={150}
+              height={150}
+              className='mr-2'
+            />
+          </Link>
+        
+        <div className="flex mt-10 mb-10 justify-center items-center">
           <div className="bg-red-100 p-8 rounded-lg shadow-md w-full max-w-md">
             <h2 className="text-2xl font-bold text-center text-red-600 mb-6">
               Login
