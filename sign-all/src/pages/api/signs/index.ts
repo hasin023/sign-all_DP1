@@ -1,13 +1,19 @@
 import type { NextApiRequest, NextApiResponse } from "next";
 import { dbConnect } from "@/utils/mongodb";
-import { getSigns } from "@/utils/queries/sign";
+import { getSigns, getWordStartingWith } from "@/utils/queries/sign";
 
 const GET = async (req: NextApiRequest, res: NextApiResponse) => {
     try {
+        const { limit, page, prefix } = req.query;
         await dbConnect();
 
-        const data = await getSigns();
-        res.status(200).json({ message: 'Signs API', data });
+        if (!prefix) {
+            const data = await getSigns(page ? +page : 1, limit ? +limit : 20);
+            res.status(200).json(data);
+        } else {
+            const data = await getWordStartingWith(prefix as string, page ? +page : 1, limit ? +limit : 20);
+            res.status(200).json(data);
+        }
     } catch (error) {
         console.log(error);
         res.status(500).json({ error: (error as Error).message });

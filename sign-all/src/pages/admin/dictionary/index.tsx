@@ -11,10 +11,10 @@ const poppins = Poppins({ weight: ["400", "600", "800"], subsets: ["latin"] })
 const alphabets = "ABCDEFGHIJKLMNOPQRSTUVWXYZ".split("")
 
 const Dictionary = () => {
-  const [words, setWords] = useState([] as { word: string; _id: string }[]);
-  const [totalPages, setTotalPages] = useState(0);
-  const [page, setPage] = useState(0);
-  const [alphabet, setAlphabet] = useState("");
+  const [words, setWords] = useState([] as { word: string; _id: string }[])
+  const [totalPages, setTotalPages] = useState(0)
+  const [page, setPage] = useState(0)
+  const [alphabet, setAlphabet] = useState("")
 
   useEffect(() => {
     fetch(`/api/signs?prefix=${alphabet}&page=${page + 1}`)
@@ -87,17 +87,17 @@ const Dictionary = () => {
             <ReactPaginate
               className='flex justify-center items-center gap-4 flex-wrap py-12'
               pageLinkClassName={
-                "px-4 py-2 rounded-md shadow outline-none bg-primary text-white text-sm hover:bg-blue-500 hover:text-white"
+                "px-3 text-sm py-1 bg-red-500 rounded shadow-sm m-2 hover:bg-red-600 text-white font-semibold"
               }
               pageCount={totalPages}
               breakLabel='...'
               nextLabel='>'
-              previousLinkClassName='px-4 py-2 rounded-md outline-none hover:bg-blue-500 hover:text-white'
-              nextLinkClassName='px-4 py-2 rounded-md outline-none hover:bg-blue-500 hover:text-white'
+              previousLinkClassName='px-4 py-2 rounded-md outline-none hover:bg-red-500 hover:text-white'
+              nextLinkClassName='px-4 py-2 rounded-md outline-none hover:bg-red-500 hover:text-white'
               pageRangeDisplayed={5}
               previousLabel='<'
               renderOnZeroPageCount={null}
-              activeLinkClassName='!bg-blue-700 !text-white'
+              activeLinkClassName='!bg-gray-800 !text-white'
               initialPage={page}
               onPageChange={onPageChange}
             />

@@ -67,17 +67,17 @@ const Search = () => {
             <ReactPaginate
               className='flex justify-center items-center gap-4 flex-wrap py-12'
               pageLinkClassName={
-                "px-4 py-2 rounded-md shadow outline-none bg-primary text-white text-sm hover:bg-blue-500 hover:text-white"
+                "px-3 text-sm py-1 bg-red-500 rounded shadow-sm m-2 hover:bg-red-600 text-white font-semibold"
               }
               pageCount={totalPages}
               breakLabel='...'
               nextLabel='>'
-              previousLinkClassName='px-4 py-2 rounded-md outline-none hover:bg-blue-500 hover:text-white'
-              nextLinkClassName='px-4 py-2 rounded-md outline-none hover:bg-blue-500 hover:text-white'
+              previousLinkClassName='px-4 py-2 rounded-md outline-none hover:bg-red-500 hover:text-white'
+              nextLinkClassName='px-4 py-2 rounded-md outline-none hover:bg-red-500 hover:text-white'
               pageRangeDisplayed={5}
               previousLabel='<'
               renderOnZeroPageCount={null}
-              activeLinkClassName='!bg-blue-700 !text-white'
+              activeLinkClassName='!bg-gray-800 !text-white'
               initialPage={page}
               onPageChange={onPageChange}
             />
