@@ -29,10 +29,10 @@ function EditWord() {
   }, [router.query.word])
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
+    e.preventDefault()
     try {
-      const token = localStorage.getItem("token");
-      const data = Object.fromEntries(new FormData(e.target as HTMLFormElement));
+      const token = localStorage.getItem("token")
+      const data = Object.fromEntries(new FormData(e.target as HTMLFormElement))
       const response = await fetch(`/api/signs/word?word=${word.word}`, {
         method: "PUT",
         headers: {
@@ -41,7 +41,9 @@ function EditWord() {
         },
         body: JSON.stringify({
           ...data,
-          videos: (data.videos as string).split(",").map((video) => video.trim()),
+          videos: (data.videos as string)
+            .split(",")
+            .map((video) => video.trim()),
         }),
       })
 
@@ -71,57 +73,58 @@ function EditWord() {
   return (
     <>
       <Head>
-        <title>{word && word?.word ? word.word : ""} - Silent Voice</title>
+        <title>{word && word?.word ? word.word : ""} - Sign All</title>
       </Head>
 
-      {
-        !word || !word.word ? (
-        <Spinner/>
-        )
-        :
-      <div className={`${poppins.className} min-h-screen bg-box`}>
-        <Navbar />
-        <div className='max-w-7xl mx-auto py-5 grid md:grid-cols-1 items-center'>
-          {!word.word ? (
-            <div className='flex justify-center items-center h-screen'>
-              loading...
-            </div>
-          ) : (
-            <form
-              className='bg-white p-4 m-4 rounded space-y-6'
-              onSubmit={handleSubmit}
-            >
-              <h1 className='text-2xl font-bold text-center'>Edit Word</h1>
-
-              <div className='flex flex-col items-start justify-center gap-3'>
-                <Label htmlFor='word' className='font-semibold'>
-                  Word
-                </Label>
-                <Input
-                  type='text'
-                  id='word'
-                  placeholder='Word'
-                  name="word"
-                  defaultValue={word.word}
-                />
+      {!word || !word.word ? (
+        <Spinner />
+      ) : (
+        <div className={`${poppins.className} min-h-screen bg-box`}>
+          <Navbar />
+          <div className='max-w-7xl mx-auto py-5 grid md:grid-cols-1 items-center'>
+            {!word.word ? (
+              <div className='flex justify-center items-center h-screen'>
+                loading...
               </div>
-              <textarea name="videos" id="videos" className="w-full min-h-10 rounded-md border border-slate-200 bg-transparent px-3 py-1 shadow-sm">
-                {word.videos.join(",")}
-              </textarea>
-
-              <Button
-                type='submit'
-                size='sm'
-                className='bg-lime-600 hover:bg-lime-700'
+            ) : (
+              <form
+                className='bg-white p-4 m-4 rounded space-y-6'
+                onSubmit={handleSubmit}
               >
-                Update
-              </Button>
-            </form>
-          )}
-        </div>
-      </div>
-      }
+                <h1 className='text-2xl font-bold text-center'>Edit Word</h1>
 
+                <div className='flex flex-col items-start justify-center gap-3'>
+                  <Label htmlFor='word' className='font-semibold'>
+                    Word
+                  </Label>
+                  <Input
+                    type='text'
+                    id='word'
+                    placeholder='Word'
+                    name='word'
+                    defaultValue={word.word}
+                  />
+                </div>
+                <textarea
+                  name='videos'
+                  id='videos'
+                  className='w-full min-h-10 rounded-md border border-slate-200 bg-transparent px-3 py-1 shadow-sm'
+                >
+                  {word.videos.join(",")}
+                </textarea>
+
+                <Button
+                  type='submit'
+                  size='sm'
+                  className='bg-lime-600 text-white hover:bg-lime-700'
+                >
+                  Update
+                </Button>
+              </form>
+            )}
+          </div>
+        </div>
+      )}
     </>
   )
 }

@@ -1,6 +1,7 @@
 import type { NextApiRequest, NextApiResponse } from "next";
 import { dbConnect } from "@/utils/mongodb";
-import { getSigns, getWordStartingWith } from "@/utils/queries/sign";
+import { createWord, deleteWordById, getSigns, getWordStartingWith } from "@/utils/queries/sign";
+import { ISign } from "@/utils/models/Sign";
 
 const GET = async (req: NextApiRequest, res: NextApiResponse) => {
     try {
@@ -25,7 +26,20 @@ const POST = async (req: NextApiRequest, res: NextApiResponse) => {
         const { word, videos } = req.body;
         await dbConnect();
 
-        res.status(201).json({ word, videos });
+        const token = req.headers.authorization && req.headers.authorization.slice(7);
+        if (!token) return res.status(401).json({ error: "Missing token" });
+
+        const user = {
+            id: 1222,
+            name: "hasin",
+            email: "hasin@admin.com",
+            isVerified: true,
+            role: "admin",
+        }
+        if (!user || user.role != 'admin') return res.status(401).json({ error: "Unauthorized" });
+
+        const sign = await createWord({ word, videos } as ISign);
+        res.status(201).json(sign);
     } catch (error) {
         console.log(error);
         res.status(500).json({ error: (error as Error).message });
@@ -38,6 +52,22 @@ const DELETE = async (req: NextApiRequest, res: NextApiResponse) => {
 
         const { wordId } = req.body;
         if (!wordId) return res.status(400).json({ error: 'Word is required' });
+
+        const token = req.headers.authorization && req.headers.authorization.slice(7);
+        if (!token) return res.status(401).json({ error: "Missing token" })
+
+        const user = {
+            id: 1222,
+            name: "hasin",
+            email: "hasin@admin.com",
+            isVerified: true,
+            role: "admin",
+        }
+        if (!user || user.role != 'admin') return res.status(401).json({ error: "Unauthorized" });
+
+        const deletedWord = await deleteWordById(wordId);
+
+        if (!deletedWord) return res.status(404).json({ error: 'Word not found' });
 
         res.status(200).json({ message: 'Word deleted successfully' });
     } catch (error) {

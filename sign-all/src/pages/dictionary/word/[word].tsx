@@ -1,5 +1,3 @@
-"use client"
-
 import Navbar from "@/components/common/Navbar"
 import { Poppins } from "next/font/google"
 import Head from "next/head"

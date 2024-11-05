@@ -1,5 +1,3 @@
-"use client"
-
 import { motion, AnimatePresence } from "framer-motion"
 import { HamburgerMenuIcon, Cross1Icon } from "@radix-ui/react-icons"
 import Link from "next/link"

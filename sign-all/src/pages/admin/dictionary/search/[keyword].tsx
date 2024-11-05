@@ -36,7 +36,7 @@ const Search = () => {
   return (
     <>
       <Head>
-        <title>Search - Silent Voice</title>
+        <title>Search - Sign All</title>
       </Head>
       <div className={`${poppins.className} min-h-screen bg-box`}>
         <Navbar />
@@ -58,7 +58,7 @@ const Search = () => {
               >
                 <h2 className='text-lg font-semibold'>{word.word}</h2>
                 <Link href={`/admin/dictionary/word/${word.word}`}>
-                  <span className='bg-primary px-2 py-1 rounded text-sm'>
+                  <span className='bg-yellow-200 hover:bg-yellow-400 hover:text-white border px-2 py-1 rounded text-sm'>
                     View
                   </span>
                 </Link>
@@ -67,13 +67,13 @@ const Search = () => {
             <ReactPaginate
               className='flex justify-center items-center gap-4 flex-wrap py-12'
               pageLinkClassName={
-                "px-3 text-sm py-1 bg-red-500 rounded shadow-sm m-2 hover:bg-red-600 text-white font-semibold"
+                "px-3 text-sm py-1 bg-yellow-500 rounded shadow-sm m-2 hover:bg-yellow-600 text-white font-semibold"
               }
               pageCount={totalPages}
               breakLabel='...'
               nextLabel='->'
-              previousLinkClassName='px-4 py-1 border-2 rounded-lg outline-none hover:bg-red-500 hover:text-white'
-              nextLinkClassName='px-4 py-1 border-2 rounded-lg outline-none hover:bg-red-500 hover:text-white'
+              previousLinkClassName='px-4 py-1 border-2 rounded-lg outline-none hover:bg-yellow-500 hover:text-white'
+              nextLinkClassName='px-4 py-1 border-2 rounded-lg outline-none hover:bg-yellow-500 hover:text-white'
               pageRangeDisplayed={5}
               previousLabel='<-'
               renderOnZeroPageCount={null}

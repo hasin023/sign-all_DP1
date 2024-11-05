@@ -58,7 +58,7 @@ export default function Search() {
               >
                 <h2 className='text-lg font-semibold'>{word.word}</h2>
                 <Link href={`/dictionary/word/${word.word}`} className=''>
-                  <span className='bg-rose-200 hover:bg-red-400 hover:text-white border px-2 py-1 rounded text-sm'>
+                  <span className='bg-red-200 hover:bg-red-400 hover:text-white border px-2 py-1 rounded text-sm'>
                     View
                   </span>
                 </Link>

@@ -14,7 +14,7 @@ export default function Home() {
       </Head>
       <div className={`${poppins.className} min-h-screen`}>
         <Navbar />
-        <main className='max-w-7xl mx-auto px-4 py-24  gap-12 justify-between items-center'>
+        <main className='max-w-7xl mx-auto px-4 py-24 gap-12 justify-between items-center'>
           <LandingPage />
         </main>
       </div>
