@@ -42,7 +42,7 @@ export default function Dictionary() {
   return (
     <>
       <Head>
-        <title>ASL Dictionary - Silent Voice</title>
+        <title>ASL Dictionary - Sign All</title>
       </Head>
 
       <div className={`${poppins.className} min-h-screen bg-box`}>
@@ -97,11 +97,11 @@ export default function Dictionary() {
                 }
                 pageCount={totalPages}
                 breakLabel='...'
-                nextLabel='>'
-                previousLinkClassName='px-4 py-2 rounded-md outline-none hover:bg-red-500 hover:text-white'
-                nextLinkClassName='px-4 py-2 rounded-md outline-none hover:bg-red-500 hover:text-white'
+                nextLabel='->'
+                previousLinkClassName='px-4 py-1 border-2 rounded-lg outline-none hover:bg-red-500 hover:text-white'
+                nextLinkClassName='px-4 py-1 border-2 rounded-lg outline-none hover:bg-red-500 hover:text-white'
                 pageRangeDisplayed={5}
-                previousLabel='<'
+                previousLabel='<-'
                 renderOnZeroPageCount={null}
                 activeLinkClassName='!bg-gray-800 !text-white'
                 initialPage={page}

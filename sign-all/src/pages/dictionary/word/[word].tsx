@@ -1,96 +1,182 @@
+"use client"
+
 import Navbar from "@/components/common/Navbar"
-import Searchbar from "@/components/common/Searchbar"
-import Spinner from "@/components/common/Spinner"
 import { Poppins } from "next/font/google"
 import Head from "next/head"
-import Link from "next/link"
-import { useEffect, useState } from "react"
-import ReactPaginate from "react-paginate"
+import { useRouter } from "next/router"
+import { useEffect, useState, useRef } from "react"
 
 const poppins = Poppins({ weight: ["400", "600", "800"], subsets: ["latin"] })
 
-export default function DictionarySearchResults() {
-  const [words, setWords] = useState([] as { word: string; _id: string }[])
-  const [totalPages, setTotalPages] = useState(0)
-  const [page, setPage] = useState(0)
-  const [query, setQuery] = useState("here") // Example query
+function Word() {
+  const router = useRouter()
+  const [word, setWord] = useState<{
+    word: string
+    videos: string[]
+    images: string[]
+    _id: string
+  }>({ word: "", videos: [], images: [], _id: "" })
   const [loading, setLoading] = useState(true)
+  const [videoStates, setVideoStates] = useState<
+    Record<
+      number,
+      {
+        loading: boolean
+        error: boolean
+        retryCount: number
+      }
+    >
+  >({})
+  const videoRefs = useRef<(HTMLVideoElement | null)[]>([])
 
   useEffect(() => {
+    if (!router.query.word) return
+
     setLoading(true)
-    fetch(`/api/signs/search?query=${query}&page=${page + 1}`)
+    setVideoStates({})
+
+    fetch(`/api/signs/word?word=${router.query.word}`)
       .then((response) => response.json())
       .then((response) => {
-        setWords(response.contents || [])
-        setTotalPages(response.totalPages)
+        console.log(response)
+        setWord(response)
+
+        // Initialize video states
+        const initialStates: Record<
+          number,
+          { loading: boolean; error: boolean; retryCount: number }
+        > = {}
+        response.videos.forEach((_, index) => {
+          initialStates[index] = { loading: true, error: false, retryCount: 0 }
+        })
+        setVideoStates(initialStates)
+
         setLoading(false)
       })
       .catch((err) => {
         console.error(err)
         setLoading(false)
       })
-  }, [page, query])
+  }, [router.query.word])
 
-  function onPageChange(selectedItem: { selected: number }) {
-    setPage(selectedItem.selected)
+  const handleVideoError = (index: number) => {
+    setVideoStates((prev) => ({
+      ...prev,
+      [index]: {
+        loading: false,
+        error: true,
+        retryCount: (prev[index]?.retryCount || 0) + 1,
+      },
+    }))
+  }
+
+  const handleVideoLoaded = (index: number) => {
+    setVideoStates((prev) => ({
+      ...prev,
+      [index]: {
+        ...prev[index],
+        loading: false,
+        error: false,
+      },
+    }))
+  }
+
+  const retryVideo = (index: number) => {
+    if (videoStates[index]?.retryCount >= 3) {
+      return // Stop retrying after 3 attempts
+    }
+
+    setVideoStates((prev) => ({
+      ...prev,
+      [index]: {
+        loading: true,
+        error: false,
+        retryCount: prev[index]?.retryCount || 0,
+      },
+    }))
+
+    if (videoRefs.current[index]) {
+      videoRefs.current[index]?.load()
+    }
   }
 
   return (
     <>
       <Head>
-        <title>Search Results - Silent Voice</title>
+        <title>{word.word ? word.word : ""} Sign All</title>
       </Head>
-
-      <div className={`${poppins.className} min-h-screen bg-box`}>
+      <div className={`${poppins.className} min-h-screen bg-gray-100`}>
         <Navbar />
-        <div className='px-4'>
-          <div className='glass-primary my-12 p-4 rounded border mx-auto max-w-7xl'>
-            <h1 className='text-2xl font-bold'>Search Results for "{query}"</h1>
-            <p className='text-lg text-gray-600'>
-              Total {words.length} words found
-            </p>
-            <Searchbar />
-          </div>
+        <div className='max-w-7xl mx-auto grid py-5 md:grid-cols-1 items-center'>
+          {loading ? (
+            <div className='flex justify-center items-center h-screen'>
+              <div className='animate-spin rounded-full h-8 w-8 border-b-2 border-gray-900'></div>
+            </div>
+          ) : !word.word ? (
+            <div className='flex justify-center items-center h-screen'>
+              No word found
+            </div>
+          ) : (
+            <div className='bg-white p-4 m-4 rounded shadow-lg'>
+              <h2 className='text-2xl font-bold'>{word.word.toUpperCase()}</h2>
+              <p className='pb-12 text-gray-600'>
+                in ASL (American Sign Language)
+              </p>
+              {word.videos.length > 0 && (
+                <div className='grid justify-center items-center gap-4'>
+                  {word.videos.map((videoUrl, i) => (
+                    <div key={`${videoUrl}-${i}`} className='relative'>
+                      {videoStates[i]?.loading && (
+                        <div className='absolute inset-0 flex items-center justify-center bg-gray-100 bg-opacity-75 rounded-lg'>
+                          <div className='animate-spin rounded-full h-8 w-8 border-b-2 border-gray-900'></div>
+                        </div>
+                      )}
 
-          <div className='pt-8'>
-            {loading ? (
-              <Spinner />
-            ) : (
-              <div className='grid gap-4 lg:grid-cols-3 md:grid-cols-2 text-center'>
-                {words.map((word, i) => (
-                  <div
-                    key={word._id}
-                    className='glass-primary p-4 rounded-lg shadow-md flex justify-between items-center'
-                  >
-                    <span className='font-semibold text-lg'>{word.word}</span>
-                    <Link href={`/dictionary/word/${word.word}`}>
-                      <button className='px-3 py-1 bg-blue-500 text-white rounded shadow hover:bg-blue-600'>
-                        View
-                      </button>
-                    </Link>
-                  </div>
-                ))}
-              </div>
-            )}
-          </div>
-
-          <ReactPaginate
-            className='flex justify-center items-center gap-4 flex-wrap py-12'
-            pageLinkClassName={
-              "px-3 text-sm py-1 bg-red-500 rounded shadow-sm m-2 hover:bg-red-600 text-white font-semibold"
-            }
-            pageCount={totalPages}
-            breakLabel='...'
-            nextLabel='>'
-            previousLabel='<'
-            previousLinkClassName='px-4 py-2 rounded-md outline-none hover:bg-red-500 hover:text-white'
-            nextLinkClassName='px-4 py-2 rounded-md outline-none hover:bg-red-500 hover:text-white'
-            pageRangeDisplayed={5}
-            onPageChange={onPageChange}
-            activeLinkClassName='!bg-gray-800 !text-white'
-          />
+                      {videoStates[i]?.error ? (
+                        <div className='bg-red-50 border border-red-200 rounded-lg p-4'>
+                          <p className='text-red-600 mb-2'>
+                            Failed to load video
+                          </p>
+                          {videoStates[i]?.retryCount < 3 && (
+                            <button
+                              onClick={() => retryVideo(i)}
+                              className='bg-red-100 text-red-600 px-4 py-2 rounded hover:bg-red-200 transition-colors'
+                            >
+                              Retry
+                            </button>
+                          )}
+                        </div>
+                      ) : (
+                        <video
+                          ref={(el) => (videoRefs.current[i] = el)}
+                          className='rounded-lg max-w-full'
+                          width='640'
+                          height='480'
+                          controls
+                          controlsList='nodownload'
+                          onContextMenu={(e) => e.preventDefault()}
+                          onError={() => handleVideoError(i)}
+                          onLoadedData={() => handleVideoLoaded(i)}
+                        >
+                          <source
+                            src={`/api/proxy-video?url=${encodeURIComponent(
+                              videoUrl
+                            )}`}
+                            type='video/mp4'
+                          />
+                          Your browser does not support the video tag.
+                        </video>
+                      )}
+                    </div>
+                  ))}
+                </div>
+              )}
+            </div>
+          )}
         </div>
       </div>
     </>
   )
 }
+
+export default Word
