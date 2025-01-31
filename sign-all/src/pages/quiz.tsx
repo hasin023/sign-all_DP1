@@ -7,29 +7,25 @@ import QuizBox from "@/components/custom/QuizBox"
 import { useRouter } from "next/router"
 import { useState } from "react"
 
-import toast from "react-hot-toast"
+import { useUser } from '@auth0/nextjs-auth0/client';
 
 const poppins = Poppins({ weight: ["400", "600", "800"], subsets: ["latin"] })
 
 const QuizPage = () => {
+  const { user, error, isLoading } = useUser();
   const router = useRouter()
   const [isQuizStarted, setIsQuizStarted] = useState(false)
   const stopQuiz = () => setIsQuizStarted(false)
 
-  const user = {
-    id: 1222,
-    name: "hasin",
-    email: "hasin@admin.com",
-    isVerified: true,
-    role: "admin",
+  if (isLoading) return <div>Loading...</div>;
+  if (error) return <div>{error.message}</div>;
+
+  if (!user) {
+    router.push('/api/auth/login');
+    return null;
   }
 
   const startQuiz = () => {
-    if (!user) {
-      toast.error("Please Login to start a quiz")
-      router.push("/login")
-      return
-    }
     setIsQuizStarted(true)
   }
 

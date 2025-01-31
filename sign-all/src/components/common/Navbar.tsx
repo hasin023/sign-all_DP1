@@ -1,114 +1,132 @@
-import React, { useEffect, useState } from "react";
-import Image from "next/image";
-import Link from "next/link";
-import { useUser } from "@auth0/nextjs-auth0/client";
+import type React from "react"
+import Image from "next/image"
+import Link from "next/link"
+import { useUser } from "@auth0/nextjs-auth0/client"
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
+import { Button } from "@/components/ui/button"
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu"
+import { Menu, User, LogOut } from "lucide-react"
 
 const Navbar = () => {
-  const { user, isLoading } = useUser();
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const { user, error, isLoading } = useUser()
 
-  useEffect(() => {
-    // Check session status
-    if (user) {
-      setIsLoggedIn(true);
-    } else {
-      setIsLoggedIn(false);
-    }
-  }, [user]);
-
-  const handleLogout = () => {
-    window.location.href = "/api/auth/logout";
-  };
+  console.log(user);
 
   return (
-    <header className='text-black shadow-md'>
-      <div className='container mx-auto px-4 flex justify-between items-center py-3'>
-        <div className='flex items-center'>
-          <Link href='/'>
-            <Image
-              src='/logo.png'
-              alt='Logo'
-              width={150}
-              height={150}
-              className='mr-2'
-            />
-          </Link>
-        </div>
+    <header className="bg-white text-gray-800 shadow-md">
+      <div className="container mx-auto px-4 flex justify-between items-center py-2">
+        <Link href="/" className="flex items-center space-x-2">
+          <Image src="/logo.png" alt="Logo" width={360} height={100} className="w-36 h-10" />
+        </Link>
 
-        <nav className='hidden md:flex space-x-8'>
-          <Link
-            href='/detection'
-            className='hover:text-rose-500 transition duration-300'
-          >
-            Sign Detection
-          </Link>
-          <Link
-            href='/dictionary'
-            className='hover:text-rose-500 transition duration-300'
-          >
-            Dictionary
-          </Link>
-          <Link
-            href='/quiz'
-            className='hover:text-rose-500 transition duration-300'
-          >
-            Quiz
-          </Link>
-          {!isLoggedIn && !isLoading ? (
-            <Link
-              href='/login'
-              className='text-rose-600 font-semibold hover:text-gray-400 transition duration-300'
-            >
-              Login
-            </Link>
+        <nav className="hidden md:flex items-center space-x-6">
+          <NavLink href="/detection">Sign Detection</NavLink>
+          <NavLink href="/dictionary">Dictionary</NavLink>
+          <NavLink href="/quiz">Quiz</NavLink>
+          {!user ? (
+            <Button asChild variant="default">
+              <Link href="/api/auth/login">Login</Link>
+            </Button>
           ) : (
-            <div className='relative'>
-              <button
-                className='flex items-center space-x-2'
-                onClick={() => (window.location.href = "/profile")}
-              >
-                <Image
-                  src={ "/default-avatar.png"}
-                  alt='Avatar'
-                  width={40}
-                  height={40}
-                  className='rounded-full'
-                />
-                <span className='hidden md:inline-block font-semibold'>
-                  {/* {user.name} */}
-                </span>
-              </button>
-              <button
-                onClick={handleLogout}
-                className='ml-4 text-red-600 font-semibold hover:text-gray-400 transition duration-300'
-              >
-                Logout
-              </button>
-            </div>
+            <UserMenu user={user} />
           )}
         </nav>
 
-        <div className='md:hidden'>
-          <button className='text-gray-300 focus:outline-none'>
-            <svg
-              xmlns='http://www.w3.org/2000/svg'
-              className='h-8 w-8'
-              fill='none'
-              viewBox='0 0 24 24'
-              stroke='currentColor'
-            >
-              <path
-                strokeLinecap='round'
-                strokeLinejoin='round'
-                strokeWidth='2'
-                d='M4 6h16M4 12h16m-7 6h7'
-              />
-            </svg>
-          </button>
-        </div>
+        <MobileMenu user={user} />
       </div>
     </header>
-  );
-};
+  )
+}
 
-export default Navbar;
+const NavLink = ({ href, children }: { href: string; children: React.ReactNode }) => (
+  <Link href={href} className="text-gray-600 hover:text-rose-500 transition duration-300">
+    {children}
+  </Link>
+)
+
+const UserMenu = ({ user }: { user: any }) => (
+  <DropdownMenu>
+    <DropdownMenuTrigger asChild>
+      <Button variant="ghost" className="relative h-8 w-8 border rounded-full transition-all hover:bg-gray-200 dark:hover:bg-gray-700">
+        <Avatar className="h-8 w-8">
+          <AvatarImage src={user.picture} alt={user.name} />
+          <AvatarFallback>{user.name?.charAt(0)}</AvatarFallback>
+        </Avatar>
+      </Button>
+    </DropdownMenuTrigger>
+    <DropdownMenuContent className="w-56 bg-white" align="end" forceMount>
+      <DropdownMenuLabel className="font-normal">
+        <div className="flex flex-col space-y-1">
+          <p className="text-sm font-medium leading-none">{user.name}</p>
+          <p className="text-xs leading-none text-muted-foreground">{user.email}</p>
+        </div>
+      </DropdownMenuLabel>
+      <DropdownMenuSeparator />
+      <DropdownMenuItem asChild>
+        <Link
+          href="/profile"
+          className="flex items-center px-2 py-2 rounded-md cursor-pointer"
+        >
+          <User className="mr-2 h-4 w-4" />
+          <span>Profile</span>
+        </Link>
+      </DropdownMenuItem>
+      <DropdownMenuItem asChild>
+        <Link
+          href="/api/auth/logout"
+          className="flex items-center px-2 py-2 rounded-md cursor-pointer"
+        >
+          <LogOut className="mr-2 h-4 w-4 text-red-600" />
+          <span className="text-red-600">Log out</span>
+        </Link>
+      </DropdownMenuItem>
+    </DropdownMenuContent>
+  </DropdownMenu >
+)
+
+const MobileMenu = ({ user }: { user: any }) => (
+  <DropdownMenu>
+    <DropdownMenuTrigger asChild>
+      <Button variant="outline" size="icon" className="md:hidden">
+        <Menu className="h-5 w-5" />
+        <span className="sr-only">Toggle menu</span>
+      </Button>
+    </DropdownMenuTrigger>
+    <DropdownMenuContent align="end">
+      <DropdownMenuItem asChild>
+        <Link href="/detection">Sign Detection</Link>
+      </DropdownMenuItem>
+      <DropdownMenuItem asChild>
+        <Link href="/dictionary">Dictionary</Link>
+      </DropdownMenuItem>
+      <DropdownMenuItem asChild>
+        <Link href="/quiz">Quiz</Link>
+      </DropdownMenuItem>
+      <DropdownMenuSeparator />
+      {user ? (
+        <>
+          <DropdownMenuItem asChild>
+            <Link href="/profile">Profile</Link>
+          </DropdownMenuItem>
+          <DropdownMenuItem asChild>
+            <Link href="/api/auth/logout">Log out</Link>
+          </DropdownMenuItem>
+        </>
+      ) : (
+        <DropdownMenuItem asChild>
+          <Link href="/api/auth/login">Login</Link>
+        </DropdownMenuItem>
+      )}
+    </DropdownMenuContent>
+  </DropdownMenu>
+)
+
+export default Navbar
+
