@@ -72,11 +72,10 @@ export default function QuizBox(props: { stopQuiz: () => void }) {
               <video
                 onError={() => setCounter(counter + 1)}
                 className='rounded-md max-w-lg mx-auto'
-                src={`/api/proxy-video?url=${
-                  words[correctIdx].videos.length
-                    ? words[correctIdx].videos[0]
-                    : ""
-                }`}
+                src={`/api/proxy-video?url=${words[correctIdx].videos.length
+                  ? words[correctIdx].videos[0]
+                  : ""
+                  }`}
                 width='640px'
                 height='480px'
                 controls
@@ -89,13 +88,12 @@ export default function QuizBox(props: { stopQuiz: () => void }) {
             {words.map((word, index) => (
               <button
                 key={index + word.word}
-                className={`w-full rounded shadow border p-4 transition-all ${
-                  givenAnswer === index
-                    ? givenAnswer === correctIdx
-                      ? "bg-green-200 border-green-400"
-                      : "bg-red-200 border-red-400"
-                    : ""
-                }`}
+                className={`w-full rounded shadow border p-4 transition-all ${givenAnswer === index
+                  ? givenAnswer === correctIdx
+                    ? "bg-green-200 border-green-400"
+                    : "bg-red-200 border-red-400"
+                  : ""
+                  }`}
                 onClick={(e) => checkAnswer(e, index)}
               >
                 <div className='flex items-center'>

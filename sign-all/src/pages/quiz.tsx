@@ -1,33 +1,22 @@
 import Head from "next/head"
-import { Poppins } from "next/font/google"
-
+import { Poppins } from 'next/font/google'
+import { useUser } from '@auth0/nextjs-auth0/client'
 import Navbar from "@/components/common/Navbar"
 import QuizBox from "@/components/custom/QuizBox"
+import { Button } from "@/components/ui/button"
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
+import { useState } from 'react'
+import Link from 'next/link'
+import { Skeleton } from "@/components/ui/skeleton"
 
-import { useRouter } from "next/router"
-import { useState } from "react"
-
-import { useUser } from '@auth0/nextjs-auth0/client';
-
-const poppins = Poppins({ weight: ["400", "600", "800"], subsets: ["latin"] })
+const poppins = Poppins({ weight: ["400", "600", "700"], subsets: ["latin"] })
 
 const QuizPage = () => {
   const { user, error, isLoading } = useUser();
-  const router = useRouter()
-  const [isQuizStarted, setIsQuizStarted] = useState(false)
-  const stopQuiz = () => setIsQuizStarted(false)
+  const [isDemoQuizStarted, setIsDemoQuizStarted] = useState(false)
 
-  if (isLoading) return <div>Loading...</div>;
-  if (error) return <div>{error.message}</div>;
-
-  if (!user) {
-    router.push('/api/auth/login');
-    return null;
-  }
-
-  const startQuiz = () => {
-    setIsQuizStarted(true)
-  }
+  if (isLoading) return <LoadingSkeleton />;
+  if (error) return <ErrorMessage message={error.message} />;
 
   return (
     <>
@@ -35,53 +24,89 @@ const QuizPage = () => {
         <title>Quiz - Sign All</title>
       </Head>
 
-      <div className={`${poppins.className} min-h-screen bg-box`}>
+      <div className={`${poppins.className} min-h-screen bg-gray-50`}>
         <Navbar />
-
-        {isQuizStarted ? (
-          <>
-            <QuizBox stopQuiz={stopQuiz} />
-          </>
-        ) : (
-          <>
-            <div className='relative min-h-screen bg-gray-100'>
-              <div
-                className='absolute top-0 left-0 w-full h-full bg-cover bg-center bg-no-repeat'
-                style={{
-                  backgroundImage: "url('/sign-language-862x570.jpg')",
-                  filter: "brightness(0.7)",
-                }}
-              ></div>
-
-              <div className='relative z-10 flex flex-col items-center py-40 bg-white/70 backdrop-blur-sm w-full'>
-                <div className='w-11/12 md:w-3/4 lg:w-2/3 xl:w-1/2 bg-white shadow-lg rounded-lg p-8'>
-                  <h1 className='text-4xl font-extrabold mb-6 text-center text-gray-800'>
-                    Take a Quiz
-                  </h1>
-                  <p className='text-lg text-center mb-6 text-gray-600'>
-                    Test Your Knowledge of American Sign Language
-                  </p>
-                  <p className='text-center mb-8 text-gray-600'>
-                    Ready to put your sign language skills to the test? Take our
-                    quiz to see how well you know the American Sign Language
-                    (ASL) alphabet.
-                  </p>
-                  <div className='flex justify-center'>
-                    <button
-                      onClick={startQuiz}
-                      className='bg-red-500 text-white px-8 py-4 rounded-full shadow-lg font-semibold hover:bg-red-600'
-                    >
-                      Start Quiz
-                    </button>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </>
-        )}
+        <main className="container mx-auto px-4 py-8">
+          {isDemoQuizStarted ? (
+            <QuizBox stopQuiz={() => setIsDemoQuizStarted(false)} />
+          ) : (
+            <QuizLandingPage
+              user={user}
+              startDemoQuiz={() => setIsDemoQuizStarted(true)}
+            />
+          )}
+        </main>
       </div>
     </>
   )
 }
+
+const QuizLandingPage = ({ user, startDemoQuiz }: { user: any, startDemoQuiz: any }) => {
+  return (
+    <Card className="max-w-2xl mx-auto">
+      <CardHeader className="text-center">
+        <CardTitle className="text-3xl font-bold">Sign Language Quiz</CardTitle>
+        <CardDescription>Test your knowledge and learn American Sign Language</CardDescription>
+      </CardHeader>
+      <CardContent className="flex flex-col items-center space-y-6">
+        <p className="text-center text-gray-600">
+          Challenge yourself with our sign language quiz and improve your skills!
+        </p>
+        <Button
+          onClick={startDemoQuiz}
+          size="lg"
+          className="bg-red-500 hover:bg-red-600 text-white font-semibold"
+        >
+          Start Demo Quiz
+        </Button>
+        {user ? (
+          <Link href="/roadmap">
+            <Button variant="outline" size="lg">
+              Go to Learning Roadmap
+            </Button>
+          </Link>
+        ) : (
+          <Link href="/api/auth/login">
+            <Button variant="outline" size="lg">
+              Log in for Full Learning Experience
+            </Button>
+          </Link>
+        )}
+      </CardContent>
+    </Card>
+  )
+}
+
+const LoadingSkeleton = () => (
+  <div className={`${poppins.className} min-h-screen bg-gray-50`}>
+    <Navbar />
+    <main className="container mx-auto px-4 py-8">
+      <Card className="max-w-2xl mx-auto">
+        <CardHeader>
+          <Skeleton className="h-8 w-3/4 mx-auto" />
+          <Skeleton className="h-4 w-1/2 mx-auto mt-2" />
+        </CardHeader>
+        <CardContent className="flex flex-col items-center space-y-4">
+          <Skeleton className="h-4 w-full" />
+          <Skeleton className="h-4 w-5/6" />
+          <Skeleton className="h-10 w-40" />
+        </CardContent>
+      </Card>
+    </main>
+  </div>
+)
+
+const ErrorMessage = ({ message }: { message: any }) => (
+  <div className={`${poppins.className} min-h-screen bg-gray-50 flex items-center justify-center`}>
+    <Card className="max-w-md">
+      <CardHeader>
+        <CardTitle className="text-2xl font-bold text-red-600">Error</CardTitle>
+      </CardHeader>
+      <CardContent>
+        <p className="text-gray-600">{message}</p>
+      </CardContent>
+    </Card>
+  </div>
+)
 
 export default QuizPage
