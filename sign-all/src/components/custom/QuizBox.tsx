@@ -51,7 +51,7 @@ export default function QuizBox(props: { stopQuiz: () => void }) {
   }
 
   return (
-    <div className='max-w-7xl mx-auto px-4 py-12'>
+    <div className='container mx-auto px-4 py-12'>
       <ShowQuizOverModal
         open={showAlert}
         score={score}

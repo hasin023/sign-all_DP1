@@ -2,6 +2,7 @@ import React from "react"
 import Image from "next/image"
 
 const Hero = () => {
+
   return (
     <section className='flex items-start justify-center'>
       <div className='container mx-auto flex flex-col items-center justify-center text-center space-y-8'>

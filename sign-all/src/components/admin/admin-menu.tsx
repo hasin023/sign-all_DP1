@@ -4,15 +4,18 @@ import Link from "next/link"
 import { useState } from "react"
 import { usePathname } from "next/navigation"
 
+const menuItems = [
+  { path: "/admin", label: "Admin Dashboard" },
+  { path: "/admin/roadmap", label: "Roadmap" },
+]
+
 const AdminMenu = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false)
   const pathname = usePathname()
 
-  const getMenuItemClass = (path: string) => {
-    return pathname === path
-      ? "block py-1 px-3 mb-2 bg-[#9fdaf0] rounded-sm transition-colors"
-      : "block py-1 px-3 mb-2 hover:bg-[#9fdaf0] rounded-sm transition-colors"
-  }
+  const getMenuItemClass = (path: string) =>
+    `block py-1 px-3 mb-2 rounded-sm transition-colors ${pathname === path ? "bg-[#fbd34d]" : "hover:bg-[#fbd34d]"
+    }`
 
   const toggleMenu = () => {
     setIsMenuOpen(!isMenuOpen)
@@ -36,9 +39,8 @@ const AdminMenu = () => {
   return (
     <div>
       <motion.button
-        className={`${
-          isMenuOpen ? "top-[4.5rem] right-8" : "top-20 right-10"
-        } bg-[#9fdaf0] p-[0.3rem] fixed rounded-md`}
+        className={`${isMenuOpen ? "top-[4.5rem] right-8" : "top-20 right-10"
+          } bg-[#fbd34d] p-[0.3rem] fixed rounded-md`}
         onClick={toggleMenu}
         variants={menuButtonVariants}
         animate={isMenuOpen ? "open" : "closed"}
@@ -63,7 +65,7 @@ const AdminMenu = () => {
       <AnimatePresence>
         {isMenuOpen && (
           <motion.section
-            className='bg-[#eaf2f5] p-3 fixed right-12 top-24 rounded-sm shadow-lg z-50'
+            className='bg-[#f5f5ea] p-3 fixed right-12 top-24 rounded-sm shadow-lg z-50'
             variants={menuVariants}
             initial='closed'
             animate='open'
@@ -76,19 +78,13 @@ const AdminMenu = () => {
               animate='open'
               exit='closed'
             >
-              <motion.li variants={menuItemVariants}>
-                <Link className={getMenuItemClass("/admin")} href='/admin'>
-                  Admin Dashboard
-                </Link>
-              </motion.li>
-              <motion.li variants={menuItemVariants}>
-                <Link
-                  className={getMenuItemClass("/admin/dictionary")}
-                  href='/admin/dictionary'
-                >
-                  Dictionary
-                </Link>
-              </motion.li>
+              {menuItems.map(({ path, label }) => (
+                <motion.li key={path} variants={menuItemVariants}>
+                  <Link className={getMenuItemClass(path)} href={path}>
+                    {label}
+                  </Link>
+                </motion.li>
+              ))}
             </motion.ul>
           </motion.section>
         )}
