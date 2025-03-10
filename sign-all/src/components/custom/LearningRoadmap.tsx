@@ -92,20 +92,25 @@ const roadmapLevels = [
 
 const LearningRoadmap = () => {
     const [expandedIndex, setExpandedIndex] = useState<number | null>(null);
-    const [completedLevels, setCompletedLevels] = useState<number[]>([]);
+    const [completedLessons, setCompletedLessons] = useState<string[]>([]);
     const router = useRouter();
 
     const toggleLevel = (index: number) => {
         setExpandedIndex(expandedIndex === index ? null : index);
     };
 
-    const markAsComplete = (index: number) => {
-        if (!completedLevels.includes(index)) {
-            setCompletedLevels((prev) => [...prev, index]);
-        }
+    // Handles marking lessons as complete
+    const toggleLessonCompletion = (lessonName: string) => {
+        setCompletedLessons((prev) =>
+            prev.includes(lessonName) ? prev.filter((name) => name !== lessonName) : [...prev, lessonName]
+        );
     };
 
-    const progress = (completedLevels.length / roadmapLevels.length) * 100;
+    
+
+    // Calculate progress dynamically based on completed lessons
+    const totalLessons = roadmapLevels.reduce((total, level) => total + level.lessons.length, 0);
+    const progress = (completedLessons.length / totalLessons) * 100;
 
     return (
         <div className="space-y-6">
@@ -114,6 +119,7 @@ const LearningRoadmap = () => {
                 Track your progress as you learn American Sign Language step by step.
             </p>
 
+            {/* Progress Bar */}
             <div className="flex justify-center mb-6">
                 <div className="w-24 h-24">
                     <CircularProgressbar
@@ -129,28 +135,43 @@ const LearningRoadmap = () => {
                 </div>
             </div>
 
+            {/* Learning Levels */}
             {roadmapLevels.map((level, index) => (
-                <Card key={index} className={`transition-all ${completedLevels.includes(index) ? "bg-green-100" : "bg-white"}`}>
-                    <CardHeader onClick={() => toggleLevel(index)} className="cursor-pointer flex justify-between items-center">
+                <Card key={index} className="transition-all bg-white shadow-lg">
+                    <CardHeader
+                        onClick={() => toggleLevel(index)}
+                        className="cursor-pointer flex justify-between items-center p-4 border-b"
+                    >
                         <CardTitle className="text-lg font-semibold">{level.title}</CardTitle>
-                        {completedLevels.includes(index) && <span className="text-green-600 font-semibold">✔ Completed</span>}
+                        <span
+                            className={`text-sm px-2 py-1 rounded-full ${
+                                level.lessons.every((lesson) => completedLessons.includes(lesson.name))
+                                    ? "bg-green-200 text-green-800"
+                                    : "bg-gray-200 text-gray-800"
+                            }`}
+                        >
+                            {completedLessons.filter((lesson) => level.lessons.some((l) => l.name === lesson)).length} / {level.lessons.length} completed
+                        </span>
                     </CardHeader>
                     {expandedIndex === index && (
-                        <CardContent>
-                            <ul className="list-disc pl-6 space-y-2">
+                        <CardContent className="p-4">
+                            <ul className="space-y-4">
                                 {level.lessons.map((lesson, i) => (
-                                    <li key={i} className="text-gray-700">
-                                        <Button variant="link" onClick={() => router.push(lesson.path)}>
-                                            {lesson.name}
-                                        </Button>
+                                    <li key={i} className="flex items-center justify-between">
+                                        <div className="flex items-center">
+                                            <input
+                                                type="checkbox"
+                                                className="h-5 w-5 text-green-600 focus:ring-green-500"
+                                                checked={completedLessons.includes(lesson.name)}
+                                                onChange={() => toggleLessonCompletion(lesson.name)}
+                                            />
+                                            <Button variant="link" onClick={() => router.push(lesson.path)} className="ml-3">
+                                                {lesson.name}
+                                            </Button>
+                                        </div>
                                     </li>
                                 ))}
                             </ul>
-                            {!completedLevels.includes(index) && (
-                                <Button onClick={() => markAsComplete(index)} className="mt-4">
-                                    Mark as Complete
-                                </Button>
-                            )}
                         </CardContent>
                     )}
                 </Card>
