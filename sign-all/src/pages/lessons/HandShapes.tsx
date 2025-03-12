@@ -75,12 +75,16 @@ const HandShapes = () => {
                 </div>
             )}
 
-            {/* Back to Roadmap Button */}
-            <div className="mt-6 text-center">
-                <Button onClick={() => router.push("/roadmap")} className="px-6 py-2 text-white bg-gray-600 rounded-full hover:bg-gray-700 transition-all">
-                    Back to Roadmap
-                </Button>
-            </div>
+            {/* Navigation Buttons */}
+                <div className="flex justify-between mt-6">
+                    <Button variant="secondary" onClick={() => router.push("/lessons/BasicEtiquette")}>
+                        ← Previous Lesson
+                    </Button>
+                    <Button onClick={() => router.push("/roadmap")}>Back to Roadmap</Button>
+                    <Button variant="secondary" onClick={() => router.push("/lessons/Fingerspelling")}>
+                        Next Lesson →
+                    </Button>
+                </div>
         </LessonLayout>
     );
 };

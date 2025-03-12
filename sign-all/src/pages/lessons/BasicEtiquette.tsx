@@ -104,15 +104,16 @@ const BasicEtiquette = () => {
 
             
 
-            {/* Back to Roadmap Button */}
-            <div className="mt-12 text-center">
-                <Button
-                    onClick={() => router.push("/roadmap")}
-                    className="px-6 py-3 text-white bg-gray-700 rounded-lg hover:bg-gray-800 transition duration-200"
-                >
-                    Back to Roadmap
-                </Button>
-            </div>
+            {/* Navigation Buttons */}
+                <div className="flex justify-between mt-6">
+                    <Button variant="secondary" onClick={() => router.push("/lessons/BriefHistory")}>
+                        ← Previous Lesson
+                    </Button>
+                    <Button onClick={() => router.push("/roadmap")}>Back to Roadmap</Button>
+                    <Button variant="secondary" onClick={() => router.push("/lessons/HandShapes")}>
+                        Next Lesson →
+                    </Button>
+                </div>
         </LessonLayout>
     );
 };
