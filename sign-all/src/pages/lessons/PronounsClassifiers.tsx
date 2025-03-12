@@ -100,11 +100,11 @@ const PronounsClassifiers = () => {
 
                 {/* Navigation Buttons */}
                 <div className="flex justify-between mt-6">
-                    <Button variant="secondary" onClick={() => router.push("/previous-lesson")}>
+                    <Button variant="secondary" onClick={() => router.push("/lessons/SentenceStructure")}>
                         ← Previous Lesson
                     </Button>
                     <Button onClick={() => router.push("/roadmap")}>Back to Roadmap</Button>
-                    <Button variant="secondary" onClick={() => router.push("/next-lesson")}>
+                    <Button variant="secondary" onClick={() => router.push("/lessons/SmallTalk")}>
                         Next Lesson →
                     </Button>
                 </div>
