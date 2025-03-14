@@ -3,6 +3,7 @@ import { Poppins } from "next/font/google";
 import { useUser } from "@auth0/nextjs-auth0/client";
 import Navbar from "@/components/common/Navbar";
 import LearningRoadmap from "@/components/custom/LearningRoadmap";
+import FloatingChatbot from "@/components/common/FloatingChatbot";
 
 
 
@@ -20,6 +21,7 @@ const RoadmapPage = () => {
                 <title>Learning Roadmap - Sign All</title>
             </Head>
             <div className={`${poppins.className} min-h-screen bg-gray-50`}>
+                <FloatingChatbot/>
                 <Navbar />
                 <main className="container mx-auto px-4 py-8">
                     <LearningRoadmap />

@@ -8,6 +8,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { useState } from 'react'
 import Link from 'next/link'
 import { Skeleton } from "@/components/ui/skeleton"
+import FloatingChatbot from "@/components/common/FloatingChatbot"
 
 const poppins = Poppins({ weight: ["400", "600", "700"], subsets: ["latin"] })
 
@@ -25,6 +26,7 @@ const QuizPage = () => {
       </Head>
 
       <div className={`${poppins.className} min-h-screen bg-gray-50`}>
+        <FloatingChatbot/>
         <Navbar />
         <main className="container mx-auto px-4 py-8">
           {isDemoQuizStarted ? (

@@ -7,6 +7,7 @@ import LandingPage from "@/components/custom/landing-page"
 import { useRouter } from "next/navigation";
 import { useUser } from "@auth0/nextjs-auth0/client"
 import Spinner from "@/components/common/Spinner";
+import FloatingChatbot from "@/components/common/FloatingChatbot";
 
 const poppins = Poppins({ weight: ["400", "600", "800"], subsets: ["latin"] })
 
@@ -29,6 +30,7 @@ export default function Home() {
         <title>Sign All</title>
       </Head>
       <div className={`${poppins.className} min-h-screen`}>
+        <FloatingChatbot/>
         <Navbar />
         <main className='container mx-auto px-4 py-24 gap-12 justify-between items-center'>
           <LandingPage />
