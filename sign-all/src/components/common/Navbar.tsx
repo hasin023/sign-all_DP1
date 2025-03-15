@@ -31,7 +31,7 @@ const Navbar = () => {
           <NavLink href="/dictionary">Dictionary</NavLink>
           <NavLink href="/quiz">Quiz</NavLink>
           {!user ? (
-            <Button asChild variant="default">
+            <Button asChild variant="default" className="border border-gray-300 dark:border-gray-700">
               <Link href="/api/auth/login">Login</Link>
             </Button>
           ) : (

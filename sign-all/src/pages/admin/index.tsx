@@ -7,6 +7,7 @@ import AdminDictionary from "@/components/admin/AdminDictionary"
 
 import { useUser } from "@auth0/nextjs-auth0/client"
 import AdminMenu from "@/components/admin/admin-menu"
+import FloatingChatbot from "@/components/common/FloatingChatbot";
 
 
 const poppins = Poppins({ weight: ["400", "600", "800"], subsets: ["latin"] })
@@ -25,6 +26,7 @@ const AdminPage = () => {
       </Head>
 
       <div className={`${poppins.className} min-h-screen bg-box`}>
+        <FloatingChatbot />
         <Navbar />
         {user?.nickname !== "admin" ? (
           <div className='bg-red-500 text-white text-center py-2'>

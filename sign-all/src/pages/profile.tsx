@@ -21,6 +21,8 @@ export default function Profile() {
   const [name, setName] = useState(user?.name || "")
   const [isSaving, setIsSaving] = useState(false)
 
+  console.log(user)
+
   const save = async (e: FormEvent) => {
     e.preventDefault()
     setIsSaving(true)

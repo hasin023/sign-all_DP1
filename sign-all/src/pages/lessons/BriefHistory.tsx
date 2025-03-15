@@ -5,7 +5,7 @@ import { useRouter } from "next/router";
 
 const BriefHistory = () => {
     const router = useRouter();
-    
+
     // State for tracking the selected answer and feedback
     const [selectedAnswer, setSelectedAnswer] = useState<string | null>(null);
     const [isSubmitted, setIsSubmitted] = useState<boolean>(false);
@@ -41,7 +41,7 @@ const BriefHistory = () => {
 
             {/* Timeline Section */}
             <h3 className="text-3xl font-bold mt-12 text-center text-blue-600">Timeline of ASL History</h3>
-            <div className="relative mt-6 px-6 max-w-3xl mx-auto bg-gradient-to-b from-blue-100 to-white p-6 rounded-lg shadow-md">
+            <div className="relative mt-6 px-6 max-w-6xl mx-auto bg-gradient-to-b from-blue-100 to-white p-6 rounded-lg shadow-md">
                 {/* Vertical Line */}
                 <div className="absolute left-1/2 transform -translate-x-1 w-1 h-full bg-gray-300"></div>
 
@@ -146,7 +146,7 @@ const BriefHistory = () => {
                             <p className="text-lg font-semibold text-green-600">🎉 Correct! ASL was recognized as a fully developed language.</p>
                         ) : (
                             <p className="text-lg font-semibold text-red-600">
-                                ❌ Incorrect. The correct answer is: <strong>"ASL was recognized as a fully developed language."</strong>
+                                ❌ Incorrect. The correct answer is: <strong>&apos;ASL was recognized as a fully developed language.&apos;</strong>
                             </p>
                         )}
                     </div>
@@ -154,13 +154,13 @@ const BriefHistory = () => {
             </section>
 
             {/* Navigation Buttons */}
-                <div className="flex justify-between mt-6">
-                    
-                    <Button onClick={() => router.push("/roadmap")}>Back to Roadmap</Button>
-                    <Button variant="secondary" onClick={() => router.push("/lessons/BasicEtiquette")}>
-                        Next Lesson →
-                    </Button>
-                </div>
+            <div className="flex justify-between mt-6">
+
+                <Button onClick={() => router.push("/roadmap")}>Back to Roadmap</Button>
+                <Button variant="secondary" onClick={() => router.push("/lessons/BasicEtiquette")}>
+                    Next Lesson →
+                </Button>
+            </div>
         </LessonLayout>
     );
 };

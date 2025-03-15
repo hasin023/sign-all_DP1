@@ -1,6 +1,6 @@
 import LessonLayout from "@/components/LessonLayout";
 import { Button } from "@/components/ui/button";
-import { useRouter } from "next/router";
+import { useRouter } from "next/navigation";
 import { useState } from "react";
 
 const HandShapes = () => {
@@ -46,9 +46,8 @@ const HandShapes = () => {
                 {handshapeOptions.map((option) => (
                     <div
                         key={option.id}
-                        className={`cursor-pointer p-2 border-4 rounded-lg transition-all duration-300 transform hover:scale-105 ${
-                            selectedOption === option.id ? (isCorrect ? "border-green-500" : "border-red-500") : "border-gray-300"
-                        }`}
+                        className={`cursor-pointer p-2 border-4 rounded-lg transition-all duration-300 transform hover:scale-105 ${selectedOption === option.id ? (isCorrect ? "border-green-500" : "border-red-500") : "border-gray-300"
+                            }`}
                         onClick={() => handleSelectOption(option.id, option.correct)}
                     >
                         <img
@@ -76,15 +75,15 @@ const HandShapes = () => {
             )}
 
             {/* Navigation Buttons */}
-                <div className="flex justify-between mt-6">
-                    <Button variant="secondary" onClick={() => router.push("/lessons/BasicEtiquette")}>
-                        ← Previous Lesson
-                    </Button>
-                    <Button onClick={() => router.push("/roadmap")}>Back to Roadmap</Button>
-                    <Button variant="secondary" onClick={() => router.push("/lessons/Fingerspelling")}>
-                        Next Lesson →
-                    </Button>
-                </div>
+            <div className="flex justify-between mt-6">
+                <Button variant="secondary" onClick={() => router.push("/lessons/BasicEtiquette")}>
+                    ← Previous Lesson
+                </Button>
+                <Button onClick={() => router.push("/roadmap")}>Back to Roadmap</Button>
+                <Button variant="secondary" onClick={() => router.push("/lessons/Fingerspelling")}>
+                    Next Lesson →
+                </Button>
+            </div>
         </LessonLayout>
     );
 };
