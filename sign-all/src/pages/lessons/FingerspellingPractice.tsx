@@ -318,7 +318,7 @@ const FingerspellingPractice = () => {
                             <iframe
                                 width="100%"
                                 height="100%"
-                                src="https://www.youtube.com/embed/FGzMdGxZGGM"
+                                src="https://www.youtube.com/embed/25XUwHErhnk"
                                 title="Slow Fingerspelling Practice"
                                 frameBorder="0"
                                 allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
@@ -332,7 +332,7 @@ const FingerspellingPractice = () => {
                             <iframe
                                 width="100%"
                                 height="100%"
-                                src="https://www.youtube.com/embed/vxRZqKihvqQ"
+                                src="https://www.youtube.com/embed/6ZWvfLQJ4Iw"
                                 title="Medium Speed Fingerspelling Practice"
                                 frameBorder="0"
                                 allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"

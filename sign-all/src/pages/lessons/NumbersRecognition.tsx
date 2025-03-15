@@ -369,7 +369,7 @@ const NumbersRecognition = () => {
                             <iframe
                                 width="100%"
                                 height="100%"
-                                src="https://www.youtube.com/embed/cJ5l6-qNhJU"
+                                src="https://www.youtube.com/embed/koOvrKENdH8"
                                 title="ASL Numbers 1-20"
                                 frameBorder="0"
                                 allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
@@ -384,7 +384,7 @@ const NumbersRecognition = () => {
                             <p className="mb-4">Test your memory by watching sequences of ASL numbers.</p>
                             <Button
                                 onClick={() =>
-                                    window.open("https://www.signlanguageforum.com/asl/fingerspelling-number-drills/", "_blank")
+                                    window.open("https://www.signlanguageforum.com/asl/fingerspelling/fingerspelling-game/", "_blank")
                                 }
                                 className="bg-green-600 hover:bg-green-700"
                             >
@@ -421,7 +421,7 @@ const NumbersRecognition = () => {
 
                     <div className="mt-6 text-center">
                         <Button
-                            onClick={() => window.open("https://www.youtube.com/watch?v=fYJP3fzikJ4", "_blank")}
+                            onClick={() => window.open("https://www.youtube.com/watch?v=t_APCbpUy6o", "_blank")}
                             variant="outline"
                         >
                             Learn ASL Math Signs

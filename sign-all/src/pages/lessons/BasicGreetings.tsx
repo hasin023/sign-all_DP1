@@ -21,7 +21,7 @@ const BasicGreetings = () => {
             title: "Hello",
             description: "The most common greeting in ASL",
             instructions: "Touch your fingers to your forehead, then move your hand outward and away from your body.",
-            videoUrl: "https://www.youtube.com/embed/Hm4GtxOOIPY?start=16&end=20",
+            videoUrl: "https://www.youtube.com/embed/uKKvNqA9N20",
             imageUrl: "https://www.handspeak.com/word/h/hello.jpg",
             quiz: {
                 question: "Which part of your body do you touch when signing 'Hello'?",
@@ -33,7 +33,7 @@ const BasicGreetings = () => {
             title: "Goodbye",
             description: "A common way to say farewell",
             instructions: "Start with an open hand, palm facing the person you're addressing, then wave your hand.",
-            videoUrl: "https://www.youtube.com/embed/Hm4GtxOOIPY?start=50&end=55",
+            videoUrl: "https://www.youtube.com/embed/R_WzZx_4Cw0",
             imageUrl: "https://www.handspeak.com/word/b/bye.jpg",
             quiz: {
                 question: "How do you sign 'Goodbye' in ASL?",
@@ -50,7 +50,7 @@ const BasicGreetings = () => {
             title: "Please",
             description: "Used when making a request or asking for something",
             instructions: "Place your dominant hand flat on your chest and make a circular motion clockwise.",
-            videoUrl: "https://www.youtube.com/embed/VxMf8QkA0oE?start=3&end=7",
+            videoUrl: "https://www.youtube.com/embed/K0mD_RcESHI",
             imageUrl: "https://www.handspeak.com/word/p/please.jpg",
             quiz: {
                 question: "What motion do you make when signing 'Please'?",
@@ -63,7 +63,7 @@ const BasicGreetings = () => {
             description: "Expressing gratitude",
             instructions:
                 "Touch your chin or lips with the fingertips of your dominant hand, then move your hand forward and down.",
-            videoUrl: "https://www.youtube.com/embed/VxMf8QkA0oE?start=15&end=19",
+            videoUrl: "https://www.youtube.com/embed/3YJ6hyyL4nw",
             imageUrl: "https://www.handspeak.com/word/t/thankyou.jpg",
             quiz: {
                 question: "Where do you start the sign for 'Thank You'?",
@@ -261,7 +261,7 @@ const BasicGreetings = () => {
                     <iframe
                         width="100%"
                         height="100%"
-                        src="https://www.youtube.com/embed/rbpuieCV7gY"
+                        src="https://www.youtube.com/embed/TWwKwKH8MwA"
                         title="ASL Greetings Conversation"
                         frameBorder="0"
                         allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"

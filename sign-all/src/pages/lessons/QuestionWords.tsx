@@ -1,12 +1,12 @@
 import LessonLayout from "@/components/LessonLayout"
 import { Button } from "@/components/ui/button"
+import { useRouter } from "next/navigation"
 import { useState } from "react"
 import { Card, CardContent, CardHeader, CardTitle, CardFooter, CardDescription } from "@/components/ui/card"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { motion } from "framer-motion"
-import { CheckCircle, XCircle, Play, Pause, RefreshCw } from "lucide-react"
+import { CheckCircle, XCircle, RefreshCw } from "lucide-react"
 import { Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious } from "@/components/ui/carousel"
-import { useRouter } from "next/navigation"
 
 const QuestionWords = () => {
     const router = useRouter()
@@ -18,7 +18,6 @@ const QuestionWords = () => {
     const [isCorrect, setIsCorrect] = useState<{ [key: string]: boolean | null }>({})
     const [quizCompleted, setQuizCompleted] = useState(false)
     const [score, setScore] = useState(0)
-    const [videoPlaying, setVideoPlaying] = useState<string | null>(null)
     const [currentScenarioIndex, setCurrentScenarioIndex] = useState(0)
 
     // Question words data
@@ -27,31 +26,31 @@ const QuestionWords = () => {
             sign: "Touch your chin with the index finger of your dominant hand, then move it outward in a small arc.",
             examples: ["Who is your teacher?", "Who went to the store?", "Who signed that letter?"],
             imageUrl: "/placeholder.svg?height=200&width=200&text=Who",
-            videoUrl: "https://www.youtube.com/embed/Hm4GtxOOIPY",
+            videoUrl: "https://www.youtube.com/embed/GyOpE6RzYbo",
         },
         what: {
             sign: "Shake both hands with index fingers extended, palms facing up.",
             examples: ["What is your name?", "What happened yesterday?", "What do you want?"],
             imageUrl: "/placeholder.svg?height=200&width=200&text=What",
-            videoUrl: "https://www.youtube.com/embed/Hm4GtxOOIPY",
+            videoUrl: "https://www.youtube.com/embed/Gm0CzJ0ao-E",
         },
         when: {
             sign: "Point the index finger of your dominant hand toward your wrist (where a watch would be).",
             examples: ["When is the meeting?", "When did you arrive?", "When will you graduate?"],
             imageUrl: "/placeholder.svg?height=200&width=200&text=When",
-            videoUrl: "https://www.youtube.com/embed/Hm4GtxOOIPY",
+            videoUrl: "https://www.youtube.com/embed/3ljevbHiAqI",
         },
         where: {
             sign: "Shake your dominant hand with index finger extended, moving it side to side.",
             examples: ["Where is the bathroom?", "Where do you live?", "Where did you put my keys?"],
             imageUrl: "/placeholder.svg?height=200&width=200&text=Where",
-            videoUrl: "https://www.youtube.com/embed/Hm4GtxOOIPY",
+            videoUrl: "https://www.youtube.com/embed/EOa6TGNA1Fw",
         },
         why: {
             sign: "Touch your temple with the index finger of your dominant hand, then move it forward while changing to a Y handshape.",
             examples: ["Why are you late?", "Why did that happen?", "Why do you study ASL?"],
             imageUrl: "/placeholder.svg?height=200&width=200&text=Why",
-            videoUrl: "https://www.youtube.com/embed/Hm4GtxOOIPY",
+            videoUrl: "https://www.youtube.com/embed/O9E9WWoVtM4",
         },
     }
 
@@ -139,15 +138,6 @@ const QuestionWords = () => {
         setScore(0)
     }
 
-    // Toggle video playback
-    const toggleVideo = (word: string) => {
-        if (videoPlaying === word) {
-            setVideoPlaying(null)
-        } else {
-            setVideoPlaying(word)
-        }
-    }
-
     return (
         <LessonLayout title="Basic Question Words (Who, What, When, Where, Why)">
             <div className="bg-blue-50 p-6 rounded-lg shadow-md mb-8">
@@ -178,7 +168,6 @@ const QuestionWords = () => {
                                 onClick={() => {
                                     setCurrentQuestionWord(word)
                                     setShowExample(false)
-                                    setVideoPlaying(null)
                                 }}
                                 className="capitalize"
                             >
@@ -197,40 +186,15 @@ const QuestionWords = () => {
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
                             <div className="flex flex-col items-center">
                                 <h3 className="text-3xl font-bold text-blue-600 mb-4 capitalize">{currentQuestionWord}</h3>
-                                <div className="relative w-full aspect-square mb-6">
-                                    {videoPlaying === currentQuestionWord ? (
-                                        <iframe
-                                            src={questionWords[currentQuestionWord as keyof typeof questionWords].videoUrl}
-                                            title={`ASL sign for ${currentQuestionWord}`}
-                                            className="absolute inset-0 w-full h-full rounded-lg"
-                                            allowFullScreen
-                                        ></iframe>
-                                    ) : (
-                                        <img
-                                            src={
-                                                questionWords[currentQuestionWord as keyof typeof questionWords].imageUrl || "/placeholder.svg"
-                                            }
-                                            alt={`ASL sign for ${currentQuestionWord}`}
-                                            className="w-full h-full object-contain rounded-lg"
-                                        />
-                                    )}
+                                <div className="relative w-full aspect-video mb-6">
+                                    <iframe
+                                        src={questionWords[currentQuestionWord as keyof typeof questionWords].videoUrl}
+                                        title={`ASL sign for ${currentQuestionWord}`}
+                                        className="absolute inset-0 w-full h-full rounded-lg"
+                                        allowFullScreen
+                                    ></iframe>
                                 </div>
-                                <div className="flex space-x-2">
-                                    <Button
-                                        onClick={() => toggleVideo(currentQuestionWord)}
-                                        variant="outline"
-                                        className="flex items-center"
-                                    >
-                                        {videoPlaying === currentQuestionWord ? (
-                                            <>
-                                                <Pause className="h-4 w-4 mr-2" /> Pause Video
-                                            </>
-                                        ) : (
-                                            <>
-                                                <Play className="h-4 w-4 mr-2" /> Play Video
-                                            </>
-                                        )}
-                                    </Button>
+                                <div className="flex justify-center">
                                     <Button onClick={() => setShowExample(!showExample)} variant="outline">
                                         {showExample ? "Hide Examples" : "Show Examples"}
                                     </Button>
@@ -406,6 +370,216 @@ const QuestionWords = () => {
                     </div>
                 </TabsContent>
             </Tabs>
+
+            <div className="bg-blue-50 p-6 rounded-lg shadow-md mb-8 mt-8">
+                <h3 className="text-xl font-bold text-blue-800 mb-4">Interactive Video Quiz</h3>
+                <p className="text-gray-700 mb-4">
+                    Watch this comprehensive video about ASL question words and try to answer the questions that follow.
+                </p>
+
+                <div className="aspect-video rounded-lg overflow-hidden mb-4">
+                    <iframe
+                        width="100%"
+                        height="100%"
+                        src="https://www.youtube.com/embed/BopX7gr1BJ8"
+                        title="ASL Question Words"
+                        frameBorder="0"
+                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                        allowFullScreen
+                    ></iframe>
+                </div>
+
+                <div className="bg-white p-4 rounded-lg mt-4">
+                    <h4 className="font-semibold mb-3">Video Quiz:</h4>
+                    <div className="space-y-4">
+                        <div className="p-3 bg-gray-50 rounded-lg">
+                            <p className="font-medium mb-2">
+                                1. What non-manual markers (facial expressions) are used with WH-questions?
+                            </p>
+                            <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 mt-3">
+                                <Button variant="outline" className="justify-start text-left">
+                                    Raised eyebrows
+                                </Button>
+                                <Button variant="outline" className="justify-start text-left">
+                                    Smiling
+                                </Button>
+                                <Button variant="outline" className="justify-start text-left">
+                                    Furrowed brows
+                                </Button>
+                                <Button variant="outline" className="justify-start text-left">
+                                    Head tilted back
+                                </Button>
+                            </div>
+                            <p className="text-xs text-gray-500 mt-2 opacity-0 hover:opacity-100 transition-opacity">
+                                Answer: Furrowed brows
+                            </p>
+                        </div>
+
+                        <div className="p-3 bg-gray-50 rounded-lg">
+                            <p className="font-medium mb-2">2. Where are question words typically placed in ASL sentences?</p>
+                            <div className="grid grid-cols-1 gap-2 mt-3">
+                                <Button variant="outline" className="justify-start text-left">
+                                    Always at the beginning
+                                </Button>
+                                <Button variant="outline" className="justify-start text-left">
+                                    Always at the end
+                                </Button>
+                                <Button variant="outline" className="justify-start text-left">
+                                    Can be at the beginning or end (or both)
+                                </Button>
+                                <Button variant="outline" className="justify-start text-left">
+                                    In the middle of the sentence
+                                </Button>
+                            </div>
+                            <p className="text-xs text-gray-500 mt-2 opacity-0 hover:opacity-100 transition-opacity">
+                                Answer: Can be at the beginning or end (or both)
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div className="bg-green-50 p-6 rounded-lg shadow-md mb-8">
+                <h3 className="text-xl font-bold text-green-800 mb-4">Role-Playing Scenarios</h3>
+                <p className="text-gray-700 mb-4">
+                    Put your question word skills to the test with these interactive role-playing scenarios.
+                </p>
+
+                <div className="bg-white p-5 rounded-lg">
+                    <h4 className="font-semibold mb-4 text-center">Getting to Know Someone</h4>
+
+                    <div className="space-y-6">
+                        <div className="border-l-4 border-blue-500 pl-4 py-2">
+                            <p className="italic text-gray-600 mb-1">Scenario: You're meeting a new classmate at an ASL meetup.</p>
+                            <p className="font-medium">Try asking these questions in ASL:</p>
+                        </div>
+
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <div className="bg-gray-50 p-3 rounded-lg">
+                                <p className="font-medium mb-1">What is your name?</p>
+                                <div className="flex items-center mt-2">
+                                    <Button
+                                        onClick={() => window.open("https://www.signingsavvy.com/sign/WHAT/470/1", "_blank")}
+                                        size="sm"
+                                        variant="outline"
+                                        className="mr-2"
+                                    >
+                                        See "WHAT"
+                                    </Button>
+                                    <Button
+                                        onClick={() => window.open("https://www.signingsavvy.com/sign/NAME/7306/1", "_blank")}
+                                        size="sm"
+                                        variant="outline"
+                                    >
+                                        See "NAME"
+                                    </Button>
+                                </div>
+                            </div>
+
+                            <div className="bg-gray-50 p-3 rounded-lg">
+                                <p className="font-medium mb-1">Where are you from?</p>
+                                <div className="flex items-center mt-2">
+                                    <Button
+                                        onClick={() => window.open("https://www.signingsavvy.com/sign/WHERE/482/1", "_blank")}
+                                        size="sm"
+                                        variant="outline"
+                                        className="mr-2"
+                                    >
+                                        See "WHERE"
+                                    </Button>
+                                    <Button
+                                        onClick={() => window.open("https://www.signingsavvy.com/sign/FROM/7240/1", "_blank")}
+                                        size="sm"
+                                        variant="outline"
+                                    >
+                                        See "FROM"
+                                    </Button>
+                                </div>
+                            </div>
+
+                            <div className="bg-gray-50 p-3 rounded-lg">
+                                <p className="font-medium mb-1">When did you start learning ASL?</p>
+                                <div className="flex items-center mt-2">
+                                    <Button
+                                        onClick={() => window.open("https://www.signingsavvy.com/sign/WHEN/481/1", "_blank")}
+                                        size="sm"
+                                        variant="outline"
+                                        className="mr-2"
+                                    >
+                                        See "WHEN"
+                                    </Button>
+                                    <Button
+                                        onClick={() => window.open("https://www.signingsavvy.com/sign/START/3695/1", "_blank")}
+                                        size="sm"
+                                        variant="outline"
+                                    >
+                                        See "START"
+                                    </Button>
+                                </div>
+                            </div>
+
+                            <div className="bg-gray-50 p-3 rounded-lg">
+                                <p className="font-medium mb-1">Why are you learning ASL?</p>
+                                <div className="flex items-center mt-2">
+                                    <Button
+                                        onClick={() => window.open("https://www.signingsavvy.com/sign/WHY/483/1", "_blank")}
+                                        size="sm"
+                                        variant="outline"
+                                        className="mr-2"
+                                    >
+                                        See "WHY"
+                                    </Button>
+                                    <Button
+                                        onClick={() => window.open("https://www.signingsavvy.com/sign/LEARN/1805/1", "_blank")}
+                                        size="sm"
+                                        variant="outline"
+                                    >
+                                        See "LEARN"
+                                    </Button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div className="text-center">
+                            <p className="text-sm text-gray-600 mb-3">
+                                Record yourself asking these questions, then try answering them!
+                            </p>
+                            <Button className="bg-green-600 hover:bg-green-700">Start Recording Practice</Button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div className="bg-red-50 p-6 rounded-lg shadow-md mb-8">
+                <h3 className="text-xl font-bold text-red-800 mb-4">Common Mistakes to Avoid</h3>
+                <p className="text-gray-700 mb-4">Be aware of these common errors when using question words in ASL.</p>
+
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div className="bg-white p-4 rounded-lg">
+                        <h4 className="font-semibold mb-2 text-red-700">Mistake: Forgetting Facial Expressions</h4>
+                        <p className="text-gray-700">
+                            In ASL, the facial expression is as important as the hand sign. Without the proper facial expression, a
+                            question may not be recognized as a question at all.
+                        </p>
+                        <div className="mt-3 p-2 bg-green-50 rounded">
+                            <p className="text-sm font-medium text-green-800">Correct approach:</p>
+                            <p className="text-sm text-gray-700">Always use furrowed eyebrows when asking WH-questions.</p>
+                        </div>
+                    </div>
+
+                    <div className="bg-white p-4 rounded-lg">
+                        <h4 className="font-semibold mb-2 text-red-700">Mistake: Using English Word Order</h4>
+                        <p className="text-gray-700">
+                            ASL has its own grammar structure. Question words can often appear at the end of sentences, unlike in
+                            English where they typically come at the beginning.
+                        </p>
+                        <div className="mt-3 p-2 bg-green-50 rounded">
+                            <p className="text-sm font-medium text-green-800">Correct approach:</p>
+                            <p className="text-sm text-gray-700">"YOU LIVE WHERE?" instead of "WHERE YOU LIVE?"</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
 
             {/* Navigation Buttons */}
             <div className="flex justify-between mt-12">
