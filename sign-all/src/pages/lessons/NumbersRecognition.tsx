@@ -1,12 +1,12 @@
 import LessonLayout from "@/components/LessonLayout"
 import { Button } from "@/components/ui/button"
+import { useRouter } from "next/navigation"
 import { useState, useEffect } from "react"
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { motion, AnimatePresence } from "framer-motion"
 import { Progress } from "@/components/ui/progress"
 import { Badge } from "@/components/ui/badge"
 import { CheckCircle, XCircle, ArrowRight, ArrowLeft } from "lucide-react"
-import { useRouter } from "next/navigation"
 
 const NumbersRecognition = () => {
     const router = useRouter()
@@ -111,10 +111,48 @@ const NumbersRecognition = () => {
         setShowHint(false)
     }, [activeTab])
 
-    // Get the appropriate image URL for the current number
+    // Replace placeholder image URLs with real URLs
+    // Add this function to get number sign images
     const getNumberImageUrl = (num: number) => {
-        // This is a placeholder - in a real app, you would have actual images for each number
-        return `/placeholder.svg?height=200&width=200&text=${num}`
+        // URLs for each number
+        const numberUrls = {
+            0: "https://www.handspeak.com/word/n/number/0.jpg",
+            1: "https://www.handspeak.com/word/n/number/1.jpg",
+            2: "https://www.handspeak.com/word/n/number/2.jpg",
+            3: "https://www.handspeak.com/word/n/number/3.jpg",
+            4: "https://www.handspeak.com/word/n/number/4.jpg",
+            5: "https://www.handspeak.com/word/n/number/5.jpg",
+            6: "https://www.handspeak.com/word/n/number/6.jpg",
+            7: "https://www.handspeak.com/word/n/number/7.jpg",
+            8: "https://www.handspeak.com/word/n/number/8.jpg",
+            9: "https://www.handspeak.com/word/n/number/9.jpg",
+            10: "https://www.handspeak.com/word/n/number/10.jpg",
+            11: "https://www.handspeak.com/word/n/number/11.jpg",
+            12: "https://www.handspeak.com/word/n/number/12.jpg",
+            13: "https://www.handspeak.com/word/n/number/13.jpg",
+            14: "https://www.handspeak.com/word/n/number/14.jpg",
+            15: "https://www.handspeak.com/word/n/number/15.jpg",
+            16: "https://www.handspeak.com/word/n/number/16.jpg",
+            17: "https://www.handspeak.com/word/n/number/17.jpg",
+            18: "https://www.handspeak.com/word/n/number/18.jpg",
+            19: "https://www.handspeak.com/word/n/number/19.jpg",
+            20: "https://www.handspeak.com/word/n/number/20.jpg",
+            30: "https://www.handspeak.com/word/n/number/30.jpg",
+            40: "https://www.handspeak.com/word/n/number/40.jpg",
+            50: "https://www.handspeak.com/word/n/number/50.jpg",
+            60: "https://www.handspeak.com/word/n/number/60.jpg",
+            70: "https://www.handspeak.com/word/n/number/70.jpg",
+            80: "https://www.handspeak.com/word/n/number/80.jpg",
+            90: "https://www.handspeak.com/word/n/number/90.jpg",
+            100: "https://www.handspeak.com/word/n/number/100.jpg",
+        }
+
+        // For two-digit numbers not listed above
+        if (num > 20 && num < 100 && num % 10 !== 0) {
+            return `/placeholder.svg?height=200&width=200&text=${num}`
+        }
+
+        return numberUrls[num as keyof typeof numberUrls] || `/placeholder.svg?height=200&width=200&text=${num}`
     }
 
     // Calculate progress percentage in learn mode
@@ -316,6 +354,81 @@ const NumbersRecognition = () => {
                     </AnimatePresence>
                 </div>
             )}
+
+            {/* Add a new interactive game section */}
+            <div className="bg-green-50 p-6 rounded-lg shadow-md mb-8 mt-8">
+                <h3 className="text-xl font-bold text-green-800 mb-4">Interactive Number Game</h3>
+                <p className="text-gray-700 mb-4">
+                    Practice your number recognition skills with these interactive videos and games.
+                </p>
+
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div>
+                        <h4 className="font-semibold mb-2">ASL Numbers 1-20 Video</h4>
+                        <div className="aspect-video rounded-lg overflow-hidden">
+                            <iframe
+                                width="100%"
+                                height="100%"
+                                src="https://www.youtube.com/embed/cJ5l6-qNhJU"
+                                title="ASL Numbers 1-20"
+                                frameBorder="0"
+                                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                                allowFullScreen
+                            ></iframe>
+                        </div>
+                    </div>
+
+                    <div>
+                        <h4 className="font-semibold mb-2">Number Memory Challenge</h4>
+                        <div className="bg-white p-4 rounded-lg shadow-inner text-center">
+                            <p className="mb-4">Test your memory by watching sequences of ASL numbers.</p>
+                            <Button
+                                onClick={() =>
+                                    window.open("https://www.signlanguageforum.com/asl/fingerspelling-number-drills/", "_blank")
+                                }
+                                className="bg-green-600 hover:bg-green-700"
+                            >
+                                Play Number Games
+                            </Button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            {/* Add a math practice section for advanced learners */}
+            <div className="bg-blue-50 p-6 rounded-lg shadow-md mb-8 mt-8">
+                <h3 className="text-xl font-bold text-blue-800 mb-4">ASL Math Practice</h3>
+                <p className="text-gray-700 mb-4">
+                    Once you're comfortable with numbers, try solving simple math problems in ASL!
+                </p>
+
+                <div className="bg-white p-4 rounded-lg shadow-inner">
+                    <h4 className="font-semibold mb-2 text-center">Try to solve these math problems in ASL:</h4>
+                    <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 mt-4">
+                        <div className="p-3 bg-gray-50 rounded-lg text-center">
+                            <p className="font-bold">5 + 3 = ?</p>
+                            <p className="text-sm text-gray-600 mt-2">Sign "5", "plus", "3", "equals", then "8"</p>
+                        </div>
+                        <div className="p-3 bg-gray-50 rounded-lg text-center">
+                            <p className="font-bold">10 - 4 = ?</p>
+                            <p className="text-sm text-gray-600 mt-2">Sign "10", "minus", "4", "equals", then "6"</p>
+                        </div>
+                        <div className="p-3 bg-gray-50 rounded-lg text-center">
+                            <p className="font-bold">3 × 7 = ?</p>
+                            <p className="text-sm text-gray-600 mt-2">Sign "3", "times", "7", "equals", then "21"</p>
+                        </div>
+                    </div>
+
+                    <div className="mt-6 text-center">
+                        <Button
+                            onClick={() => window.open("https://www.youtube.com/watch?v=fYJP3fzikJ4", "_blank")}
+                            variant="outline"
+                        >
+                            Learn ASL Math Signs
+                        </Button>
+                    </div>
+                </div>
+            </div>
 
             {/* Navigation Buttons */}
             <div className="flex justify-between mt-12">

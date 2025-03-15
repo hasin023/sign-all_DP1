@@ -1,11 +1,11 @@
 import LessonLayout from "@/components/LessonLayout"
 import { Button } from "@/components/ui/button"
+import { useRouter } from "next/navigation"
 import { useState } from "react"
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { motion, AnimatePresence } from "framer-motion"
 import { CheckCircle, XCircle, Play, Pause, Volume2 } from "lucide-react"
-import { useRouter } from "next/navigation"
 
 const BasicGreetings = () => {
     const router = useRouter()
@@ -21,8 +21,8 @@ const BasicGreetings = () => {
             title: "Hello",
             description: "The most common greeting in ASL",
             instructions: "Touch your fingers to your forehead, then move your hand outward and away from your body.",
-            videoUrl: "https://www.youtube.com/embed/Hm4GtxOOIPY",
-            imageUrl: "/placeholder.svg?height=300&width=300&text=Hello",
+            videoUrl: "https://www.youtube.com/embed/Hm4GtxOOIPY?start=16&end=20",
+            imageUrl: "https://www.handspeak.com/word/h/hello.jpg",
             quiz: {
                 question: "Which part of your body do you touch when signing 'Hello'?",
                 options: ["Forehead", "Chin", "Chest", "Shoulder"],
@@ -33,8 +33,8 @@ const BasicGreetings = () => {
             title: "Goodbye",
             description: "A common way to say farewell",
             instructions: "Start with an open hand, palm facing the person you're addressing, then wave your hand.",
-            videoUrl: "https://www.youtube.com/embed/Hm4GtxOOIPY",
-            imageUrl: "/placeholder.svg?height=300&width=300&text=Goodbye",
+            videoUrl: "https://www.youtube.com/embed/Hm4GtxOOIPY?start=50&end=55",
+            imageUrl: "https://www.handspeak.com/word/b/bye.jpg",
             quiz: {
                 question: "How do you sign 'Goodbye' in ASL?",
                 options: [
@@ -50,8 +50,8 @@ const BasicGreetings = () => {
             title: "Please",
             description: "Used when making a request or asking for something",
             instructions: "Place your dominant hand flat on your chest and make a circular motion clockwise.",
-            videoUrl: "https://www.youtube.com/embed/Hm4GtxOOIPY",
-            imageUrl: "/placeholder.svg?height=300&width=300&text=Please",
+            videoUrl: "https://www.youtube.com/embed/VxMf8QkA0oE?start=3&end=7",
+            imageUrl: "https://www.handspeak.com/word/p/please.jpg",
             quiz: {
                 question: "What motion do you make when signing 'Please'?",
                 options: ["Up and down", "Side to side", "Circular", "Zigzag"],
@@ -63,8 +63,8 @@ const BasicGreetings = () => {
             description: "Expressing gratitude",
             instructions:
                 "Touch your chin or lips with the fingertips of your dominant hand, then move your hand forward and down.",
-            videoUrl: "https://www.youtube.com/embed/Hm4GtxOOIPY",
-            imageUrl: "/placeholder.svg?height=300&width=300&text=Thank+You",
+            videoUrl: "https://www.youtube.com/embed/VxMf8QkA0oE?start=15&end=19",
+            imageUrl: "https://www.handspeak.com/word/t/thankyou.jpg",
             quiz: {
                 question: "Where do you start the sign for 'Thank You'?",
                 options: ["Forehead", "Chin or lips", "Chest", "Shoulder"],
@@ -248,6 +248,85 @@ const BasicGreetings = () => {
                 <p className="text-gray-700 mt-4">
                     Practice this sequence in front of a mirror or record yourself to review your signs.
                 </p>
+            </div>
+
+            {/* Immersive Practice */}
+            <div className="bg-blue-50 p-6 rounded-lg shadow-md mb-8 mt-8">
+                <h3 className="text-xl font-bold text-blue-800 mb-4">Immersive Practice</h3>
+                <p className="text-gray-700 mb-4">
+                    Watch this video of a natural conversation using the greetings you've learned, then try to follow along.
+                </p>
+
+                <div className="aspect-video rounded-lg overflow-hidden mb-4">
+                    <iframe
+                        width="100%"
+                        height="100%"
+                        src="https://www.youtube.com/embed/rbpuieCV7gY"
+                        title="ASL Greetings Conversation"
+                        frameBorder="0"
+                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                        allowFullScreen
+                    ></iframe>
+                </div>
+
+                <div className="bg-white p-4 rounded-lg">
+                    <h4 className="font-semibold mb-2">Practice Challenge:</h4>
+                    <ol className="list-decimal pl-6 space-y-2 text-gray-700">
+                        <li>Watch the video once through</li>
+                        <li>Watch again and try to identify all the greetings used</li>
+                        <li>Practice responding appropriately to each greeting</li>
+                        <li>Try recording yourself having a similar conversation</li>
+                    </ol>
+                </div>
+            </div>
+
+            {/* Mirror Practice Tool */}
+            <div className="bg-purple-50 p-6 rounded-lg shadow-md mb-8">
+                <h3 className="text-xl font-bold text-purple-800 mb-4">Mirror Practice Tool</h3>
+                <p className="text-gray-700 mb-4">
+                    Use your device's camera to practice signing greetings and see yourself sign.
+                </p>
+
+                <div className="bg-white p-4 rounded-lg text-center">
+                    <Button
+                        onClick={() => {
+                            // Simple permission check and webcam display
+                            if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
+                                // Create video element if it doesn't exist
+                                let videoElement = document.getElementById("mirror-practice")
+                                if (!videoElement) {
+                                    videoElement = document.createElement("video")
+                                    videoElement.id = "mirror-practice"
+                                    videoElement.width = 640
+                                    videoElement.height = 480
+                                    videoElement.autoplay = true
+                                    videoElement.className = "mx-auto mt-4 rounded-lg border border-gray-300"
+                                    document.getElementById("mirror-container")?.appendChild(videoElement)
+                                }
+
+                                // Get webcam feed
+                                navigator.mediaDevices
+                                    .getUserMedia({ video: true })
+                                    .then((stream) => {
+                                        if (videoElement instanceof HTMLVideoElement) {
+                                            videoElement.srcObject = stream
+                                        }
+                                    })
+                                    .catch((err) => {
+                                        console.log("An error occurred: " + err)
+                                        alert("Could not access webcam. Please check permissions.")
+                                    })
+                            } else {
+                                alert("Your browser doesn't support webcam access.")
+                            }
+                        }}
+                        className="bg-purple-600 hover:bg-purple-700"
+                    >
+                        Start Mirror Practice
+                    </Button>
+                    <div id="mirror-container" className="mt-4"></div>
+                    <p className="text-xs text-gray-500 mt-2">Webcam access is required for this feature.</p>
+                </div>
             </div>
 
             {/* Navigation Buttons */}

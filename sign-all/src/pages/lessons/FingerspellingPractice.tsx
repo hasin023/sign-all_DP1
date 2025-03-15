@@ -1,17 +1,17 @@
 import LessonLayout from "@/components/LessonLayout"
 import { Button } from "@/components/ui/button"
+import { useRouter } from "next/navigation"
 import { useState, useEffect, useRef } from "react"
 import { motion, AnimatePresence } from "framer-motion"
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { Badge } from "@/components/ui/badge"
 import { CheckCircle, XCircle, Clock, RefreshCw } from "lucide-react"
-import { useRouter } from "next/navigation"
 
 const FingerspellingPractice = () => {
     const router = useRouter()
     const [activeTab, setActiveTab] = useState("common-words")
     const [currentWord, setCurrentWord] = useState("")
-    const [currentLetterIndex, setCurrentLetterIndex] = useState(0)
+    const [currentLetterIndex, setCurrentLetterIndex] = useState(-1)
     const [showWord, setShowWord] = useState(true)
     const [userInput, setUserInput] = useState("")
     const [isCorrect, setIsCorrect] = useState<boolean | null>(null)
@@ -22,6 +22,7 @@ const FingerspellingPractice = () => {
     const [completedWords, setCompletedWords] = useState<string[]>([])
     const timerRef = useRef<NodeJS.Timeout | null>(null)
     const inputRef = useRef<HTMLInputElement>(null)
+    const [showingLetters, setShowingLetters] = useState(false)
 
     // Word lists by category
     const wordLists = {
@@ -59,16 +60,6 @@ const FingerspellingPractice = () => {
         setUserInput("")
         setIsCorrect(null)
         setShowWord(true)
-
-        // Start the timer for memorization
-        const memorizeTime = difficulty === "easy" ? 3000 : difficulty === "medium" ? 2000 : 1000
-        setTimeout(() => {
-            setShowWord(false)
-            setIsTimerRunning(true)
-            if (inputRef.current) {
-                inputRef.current.focus()
-            }
-        }, memorizeTime)
 
         return newWord
     }
@@ -124,6 +115,41 @@ const FingerspellingPractice = () => {
             startPractice()
         }
     }, [activeTab, difficulty])
+
+    const showLettersSequentially = () => {
+        setShowingLetters(true)
+        setCurrentLetterIndex(-1)
+
+        // Show each letter one by one with a delay
+        currentWord.split("").forEach((letter, index) => {
+            setTimeout(() => {
+                setCurrentLetterIndex(index)
+            }, index * 1000) // 1 second delay between letters
+        })
+
+        // After showing all letters, show the whole word for a moment before hiding
+        setTimeout(
+            () => {
+                setShowingLetters(false)
+                // Schedule hiding the word
+                setTimeout(() => {
+                    setShowWord(false)
+                    setIsTimerRunning(true)
+                    if (inputRef.current) {
+                        inputRef.current.focus()
+                    }
+                }, 2000) // Show the full word for 2 seconds
+            },
+            currentWord.length * 1000 + 500,
+        )
+    }
+
+    // Call this function when a new word is selected
+    useEffect(() => {
+        if (showWord && currentWord) {
+            showLettersSequentially()
+        }
+    }, [currentWord, showWord])
 
     return (
         <LessonLayout title="Practicing Fingerspelling Common Words">
@@ -194,16 +220,35 @@ const FingerspellingPractice = () => {
                         >
                             <h3 className="text-xl font-semibold text-gray-700 mb-2">Memorize this word:</h3>
                             <div className="text-4xl font-bold text-blue-600 tracking-widest mb-4">{currentWord}</div>
-                            <div className="flex space-x-2">
-                                {currentWord.split("").map((letter, index) => (
-                                    <img
-                                        key={index}
-                                        src={`https://www.lifeprint.com/asl101/fingerspelling/abc-gifs/${letter.toLowerCase()}.gif`}
-                                        alt={`ASL letter ${letter}`}
-                                        className="w-16 h-16 object-contain"
-                                    />
-                                ))}
+                            <div className="flex space-x-2 justify-center min-h-[100px]">
+                                {showingLetters
+                                    ? currentWord.split("").map((letter, index) => (
+                                        <div key={index} className="w-16 h-16 flex justify-center">
+                                            {index <= currentLetterIndex && (
+                                                <img
+                                                    src={`https://www.lifeprint.com/asl101/fingerspelling/abc-gifs/${letter.toLowerCase()}.gif`}
+                                                    alt={`ASL letter ${letter}`}
+                                                    className="w-16 h-16 object-contain"
+                                                />
+                                            )}
+                                        </div>
+                                    ))
+                                    : currentWord
+                                        .split("")
+                                        .map((letter, index) => (
+                                            <img
+                                                key={index}
+                                                src={`https://www.lifeprint.com/asl101/fingerspelling/abc-gifs/${letter.toLowerCase()}.gif`}
+                                                alt={`ASL letter ${letter}`}
+                                                className="w-16 h-16 object-contain"
+                                            />
+                                        ))}
                             </div>
+                            <p className="text-sm text-gray-500 mt-2">
+                                {showingLetters
+                                    ? `Watch the letters appear one by one (${currentLetterIndex + 1}/${currentWord.length})`
+                                    : "Try to remember the whole word"}
+                            </p>
                         </motion.div>
                     ) : (
                         <motion.div
@@ -259,6 +304,43 @@ const FingerspellingPractice = () => {
                         </motion.div>
                     )}
                 </AnimatePresence>
+            </div>
+
+            <div className="bg-green-50 p-6 rounded-lg shadow-md mb-8">
+                <h3 className="text-xl font-bold text-green-800 mb-2">Real-World Practice</h3>
+                <p className="text-gray-700 mb-4">
+                    Watch real ASL signers fingerspell at different speeds to improve your receptive skills.
+                </p>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div>
+                        <h4 className="font-semibold mb-2">Beginner Speed</h4>
+                        <div className="aspect-video rounded-lg overflow-hidden">
+                            <iframe
+                                width="100%"
+                                height="100%"
+                                src="https://www.youtube.com/embed/FGzMdGxZGGM"
+                                title="Slow Fingerspelling Practice"
+                                frameBorder="0"
+                                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                                allowFullScreen
+                            ></iframe>
+                        </div>
+                    </div>
+                    <div>
+                        <h4 className="font-semibold mb-2">Intermediate Speed</h4>
+                        <div className="aspect-video rounded-lg overflow-hidden">
+                            <iframe
+                                width="100%"
+                                height="100%"
+                                src="https://www.youtube.com/embed/vxRZqKihvqQ"
+                                title="Medium Speed Fingerspelling Practice"
+                                frameBorder="0"
+                                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                                allowFullScreen
+                            ></iframe>
+                        </div>
+                    </div>
+                </div>
             </div>
 
             {/* Tips Section */}

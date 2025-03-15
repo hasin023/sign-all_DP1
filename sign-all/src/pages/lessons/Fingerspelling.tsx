@@ -1,9 +1,9 @@
 import LessonLayout from "@/components/LessonLayout"
 import { Button } from "@/components/ui/button"
+import { useRouter } from "next/navigation"
 import { useState, useEffect } from "react"
 import { Progress } from "@/components/ui/progress"
 import { motion } from "framer-motion"
-import { useRouter } from "next/navigation"
 
 const Fingerspelling = () => {
     const router = useRouter()
@@ -67,6 +67,11 @@ const Fingerspelling = () => {
         setIsCorrect(null)
     }
 
+    // Replace the image URL generation with real URLs from lifeprint.com
+    const getLetterImageUrl = (letter: string) => {
+        return `https://www.lifeprint.com/asl101/fingerspelling/abc-gifs/${letter.toLowerCase()}.gif`;
+    };
+
     return (
         <LessonLayout title="Learning the ASL Alphabet (A-Z)">
             {!practiceMode ? (
@@ -104,42 +109,85 @@ const Fingerspelling = () => {
                         >
                             <h3 className="text-6xl font-bold text-blue-600 mb-4">{currentLetter}</h3>
                             <img
-                                src={`https://www.lifeprint.com/asl101/fingerspelling/abc-gifs/${currentLetter.toLowerCase()}.gif`}
+                                src={getLetterImageUrl(currentLetter) || "/placeholder.svg"}
                                 alt={`ASL letter ${currentLetter}`}
                                 className="w-48 h-48 object-contain mb-4"
                             />
+                            <div className="mt-4">
+                                <Button
+                                    onClick={() => window.open(`https://fingerspelling.xyz/letter/${currentLetter.toLowerCase()}`, '_blank')}
+                                    variant="outline"
+                                    className="w-full"
+                                >
+                                    View 3D Model
+                                </Button>
+                                <p className="text-xs text-gray-500 mt-1 text-center">Opens fingerspelling.xyz in a new tab</p>
+                            </div>
                             <Button onClick={() => setShowHint(!showHint)} variant="ghost">
                                 {showHint ? "Hide Hint" : "Show Hint"}
                             </Button>
                             {showHint && (
-                                <p className="text-gray-600 mt-2 text-center">
-                                    {currentLetter === "A" && "Make a fist with your thumb resting on the side."}
-                                    {currentLetter === "B" && "Hold your hand flat with fingers together and thumb tucked."}
-                                    {currentLetter === "C" && "Curve your hand into a C shape."}
-                                    {currentLetter === "D" && "Make a circle with thumb and index finger, other fingers up."}
-                                    {currentLetter === "E" && "Curl your fingers in, thumb tucked under."}
-                                    {currentLetter === "F" && "Connect thumb and index finger, other fingers up."}
-                                    {currentLetter === "G" && "Point index finger, thumb extended, other fingers closed."}
-                                    {currentLetter === "H" && "Extend index and middle fingers together, other fingers closed."}
-                                    {currentLetter === "I" && "Make a fist with pinky finger extended."}
-                                    {currentLetter === "J" && "Extend pinky finger and trace a J shape."}
-                                    {currentLetter === "K" && "Index finger up, middle finger and thumb connected, other fingers up."}
-                                    {currentLetter === "L" && "Extend thumb and index finger to form an L shape."}
-                                    {currentLetter === "M" && "Place thumb between ring and pinky fingers of a closed fist."}
-                                    {currentLetter === "N" && "Place thumb between middle and ring fingers of a closed fist."}
-                                    {currentLetter === "O" && "Form a circle with all fingers and thumb."}
-                                    {currentLetter === "P" && "Point middle finger down, index finger and thumb extended."}
-                                    {currentLetter === "Q" && "Point down with index finger, thumb and index form a circle."}
-                                    {currentLetter === "R" && "Cross index and middle fingers."}
-                                    {currentLetter === "S" && "Make a fist with thumb wrapped over fingers."}
-                                    {currentLetter === "T" && "Make a fist with thumb between index and middle fingers."}
-                                    {currentLetter === "U" && "Extend index and middle fingers together."}
-                                    {currentLetter === "V" && "Extend index and middle fingers in a V shape."}
-                                    {currentLetter === "W" && "Extend index, middle, and ring fingers."}
-                                    {currentLetter === "X" && "Make a hook with index finger, other fingers closed."}
-                                    {currentLetter === "Y" && "Extend thumb and pinky, other fingers closed."}
-                                    {currentLetter === "Z" && "Trace a Z shape with index finger."}
-                                </p>
+                                <>
+                                    <p className="text-gray-600 mt-2 text-center">
+                                        {currentLetter === "A" && "Make a fist with your thumb resting on the side."}
+                                        {currentLetter === "B" && "Hold your hand flat with fingers together and thumb tucked."}
+                                        {currentLetter === "C" && "Curve your hand into a C shape."}
+                                        {currentLetter === "D" && "Make a circle with thumb and index finger, other fingers up."}
+                                        {currentLetter === "E" && "Curl your fingers in, thumb tucked under."}
+                                        {currentLetter === "F" && "Connect thumb and index finger, other fingers up."}
+                                        {currentLetter === "G" && "Point index finger, thumb extended, other fingers closed."}
+                                        {currentLetter === "H" && "Extend index and middle fingers together, other fingers closed."}
+                                        {currentLetter === "I" && "Make a fist with pinky finger extended."}
+                                        {currentLetter === "J" && "Extend pinky finger and trace a J shape."}
+                                        {currentLetter === "K" && "Index finger up, middle finger and thumb connected, other fingers up."}
+                                        {currentLetter === "L" && "Extend thumb and index finger to form an L shape."}
+                                        {currentLetter === "M" && "Place thumb between ring and pinky fingers of a closed fist."}
+                                        {currentLetter === "N" && "Place thumb between middle and ring fingers of a closed fist."}
+                                        {currentLetter === "O" && "Form a circle with all fingers and thumb."}
+                                        {currentLetter === "P" && "Point middle finger down, index finger and thumb extended."}
+                                        {currentLetter === "Q" && "Point down with index finger, thumb and index form a circle."}
+                                        {currentLetter === "R" && "Cross index and middle fingers."}
+                                        {currentLetter === "S" && "Make a fist with thumb wrapped over fingers."}
+                                        {currentLetter === "T" && "Make a fist with thumb between index and middle fingers."}
+                                        {currentLetter === "U" && "Extend index and middle fingers together."}
+                                        {currentLetter === "V" && "Extend index and middle fingers in a V shape."}
+                                        {currentLetter === "W" && "Extend index, middle, and ring fingers."}
+                                        {currentLetter === "X" && "Make a hook with index finger, other fingers closed."}
+                                        {currentLetter === "Y" && "Extend thumb and pinky, other fingers closed."}
+                                        {currentLetter === "Z" && "Trace a Z shape with index finger."}
+                                    </p>
+                                    <div className="mt-4 bg-blue-50 p-3 rounded-lg">
+                                        <h4 className="font-semibold text-blue-800">Memory Aid:</h4>
+                                        <p className="text-sm text-gray-700">
+                                            {currentLetter === "A" && "Think of a closed fist like an 'A' with a thumb on the side."}
+                                            {currentLetter === "B" && "Like holding up a 'B'ook with your palm facing forward."}
+                                            {currentLetter === "C" && "Shaped exactly like the letter C."}
+                                            {currentLetter === "D" && "Your fingers form a small 'd' shape."}
+                                            {currentLetter === "E" && "Like you're holding a tiny 'e'gg in your curled fingers."}
+                                            {currentLetter === "F" && "Your fingers create an 'f' shape from the side view."}
+                                            {currentLetter === "G" && "Looks like a 'G' with your index finger and thumb extended."}
+                                            {currentLetter === "H" && "Two fingers out resembles part of the letter H."}
+                                            {currentLetter === "I" && "A single pinky up, the thinnest letter."}
+                                            {currentLetter === "J" && "Trace a 'j' in the air with your pinky."}
+                                            {currentLetter === "K" && "The three extended fingers resemble the three points of 'K'."}
+                                            {currentLetter === "L" && "Forms a perfect 'L' with thumb and index finger."}
+                                            {currentLetter === "M" && "Three fingers down representing the three points of 'M'."}
+                                            {currentLetter === "N" && "Two fingers down representing the two points of 'N'."}
+                                            {currentLetter === "O" && "Forms a perfect 'O' shape."}
+                                            {currentLetter === "P" && "Like pointing down to 'p'ark your car."}
+                                            {currentLetter === "Q" && "Like a 'q' with its descender pointing down."}
+                                            {currentLetter === "R" && "Like crossing fingers to make an 'R'."}
+                                            {currentLetter === "S" && "A closed fist is like a curled up 'S'."}
+                                            {currentLetter === "T" && "Thumb between fingers like the top of a 'T'."}
+                                            {currentLetter === "U" && "Two fingers up like the shape of 'U'."}
+                                            {currentLetter === "V" && "Peace sign, exactly like the letter 'V'."}
+                                            {currentLetter === "W" && "Three fingers forming the three points of 'W'."}
+                                            {currentLetter === "X" && "Like your finger is making a hook, or the curve of an 'X'."}
+                                            {currentLetter === "Y" && "Exactly like the letter 'Y' with thumb and pinky extended."}
+                                            {currentLetter === "Z" && "Trace a 'Z' in the air."}
+                                        </p>
+                                    </div>
+                                </>
                             )}
                         </motion.div>
 
@@ -229,6 +277,20 @@ const Fingerspelling = () => {
                             Next Random Letter
                         </Button>
                     </div>
+
+                    <div className="mt-8 bg-purple-50 p-6 rounded-lg">
+                        <h3 className="text-xl font-bold text-purple-800 mb-4">Speed Challenge</h3>
+                        <p className="text-gray-700 mb-4">
+                            How fast can you recognize letters? Start the challenge to test your skills!
+                        </p>
+                        <Button
+                            onClick={() => window.open('https://asl.ms/', '_blank')}
+                            className="bg-purple-600 hover:bg-purple-700"
+                        >
+                            Start Speed Challenge
+                        </Button>
+                        <p className="text-xs text-gray-500 mt-2">Opens asl.ms fingerspelling tool in a new tab</p>
+                    </div>
                 </>
             )}
 
@@ -247,4 +309,3 @@ const Fingerspelling = () => {
 }
 
 export default Fingerspelling
-
