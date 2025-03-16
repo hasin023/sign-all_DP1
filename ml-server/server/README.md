@@ -1,34 +1,29 @@
-# Basic FastAPI
+### Server Setup
 
-## Virtual Environment
-
-Create a virtual environment:
+- Create a virtual environment:
 
 ```bash
-python -m venv .venv
+python -m venv venv
 ```
 
-Activate the virtual environment:
+- Activate the virtual environment:
 
 ```bash
-source .venv/bin/activate # Linux
-.venv\Scripts\activate # Windows
+source venv/bin/activate # Linux
+
+.\venv\Scripts\activate # Windows
 ```
 
-Install the dependencies:
+- Install the dependencies:
 
 ```bash
-pip install -r requirements.txt
+pip install mediapipe opencv-python tensorflow==2.15.1 fastapi uvicorn cvzone python-socketio
 ```
 
-Then, Run the development server:
+- Run the server:
 
 ```bash
-fastapi dev server.py
+uvicorn server:app --reload
 ```
 
-Run the production server:
-
-```bash
-fastapi run server.py
-```
+**_NOTE:_** Ensure your virtual environment is activated before running the server.

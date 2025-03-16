@@ -1,27 +1,18 @@
-from fastapi import FastAPI
 import cv2
 from cvzone.HandTrackingModule import HandDetector
 from cvzone.ClassificationModule import Classifier
 import numpy as np
-import base64
-import socketio
+import math
 
+cap = cv2.VideoCapture(0)
 detector = HandDetector()
-
-model_path = "Model/keras_model.h5"
-label_path = "Model/labels.txt"
-
-classifier = Classifier("Model/keras_model.h5" , "Model/labels.txt")
+classifier = Classifier("Model.5/keras_model.h5" , "Model.5/labels.txt")
 offset = 20
 imgSize = 300
 counter = 0
 
-labels = []
-with open(label_path, 'r') as file:
-    for line in file:
-        label = line.split(maxsplit=1)[1]
-        labels.append(label.strip())
-
+# labels = ["Hello","I love you","No","Okay","Please","Thank you","Yes"]
+labels = [ "Hello", "I Love You", "Ok", "No", "Yes"]
 
 # Define connections between landmarks (based on the standard hand model)
 connections = [
@@ -33,11 +24,12 @@ connections = [
 ]
 
 
-def getSign(_img):
+
+while True:
+    success, img = cap.read()
+    hands, img = detector.findHands(img)
+    imgOutput = img.copy()
     try:
-        if _img is None:
-            return ('', _img)
-        hands, img = detector.findHands(_img)
         if hands:
             hand = hands[0]
             lmList = hand['lmList']  # List of 21 landmark points
@@ -78,35 +70,21 @@ def getSign(_img):
             
             prediction , index = classifier.getPrediction(imgBlank, draw= False)
 
-            if prediction[index] > 0.6:
-                cv2.rectangle(img,(x-offset,y-offset-70),(x -offset+400, y - offset+60-50),(0,255,0),cv2.FILLED)  
-                cv2.putText(img,labels[index],(x,y-30),cv2.FONT_HERSHEY_COMPLEX,2,(0,0,0),2) 
+            if prediction[index] > 0.7:
+                cv2.rectangle(imgOutput,(x-offset,y-offset-70),(x -offset+400, y - offset+60-50),(0,255,0),cv2.FILLED)  
+                cv2.putText(imgOutput,labels[index],(x,y-30),cv2.FONT_HERSHEY_COMPLEX,2,(0,0,0),2) 
 
-                cv2.rectangle(img,(x-offset,y-offset),(x + w + offset, y+h + offset),(0,255,0),4)
-            
-            return (labels[index] if prediction[index] > 0.6 else '', img)
-        else:
-            return ('', img)
+                cv2.rectangle(imgOutput,(x-offset,y-offset),(x + w + offset, y+h + offset),(0,255,0),4)   
+
+                # cv2.imshow('ImageCrop', imgCrop)
+                # cv2.imshow('ImageWhite', imgWhite)
+                
+            key = cv2.waitKey(1)
+            if key == 27:
+                break
     except Exception as e:
         print(e)
-        return ('', img)
 
-app = FastAPI()
-sio=socketio.AsyncServer(cors_allowed_origins='*', async_mode='asgi')
-socket_app = socketio.ASGIApp(sio)
-app.mount("/", socket_app)
-
-
-@sio.on('frame')
-async def client_side_receive_msg(sid, msg):
-    nparr = np.frombuffer(base64.b64decode(msg), np.uint8)
-    frame = cv2.imdecode(nparr, cv2.IMREAD_COLOR)
+    cv2.imshow('Image', imgOutput)
+    cv2.waitKey(1)
     
-    if frame is None:
-        print("Failed to decode frame")
-        return
-    
-    sign, img = getSign(frame)
-    await sio.emit('word', {'word': sign}, room=sid)
-    if(img is not None):
-        await sio.emit('keypoints', base64.b64encode(cv2.imencode('.jpg', img)[1]).decode(), room=sid)
