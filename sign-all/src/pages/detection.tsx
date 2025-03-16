@@ -317,3 +317,118 @@ const SignDetection: React.FC = () => {
 
 export default SignDetection
 
+// "use client"
+
+// import React, { useState, useEffect, useRef } from "react";
+// import { Groq } from "groq-sdk";
+// import { io, type Socket } from "socket.io-client";
+// import { modelServerUrl } from "@/utils/const";
+// import Navbar from "@/components/common/Navbar";
+
+// const groq = new Groq({
+//   apiKey: process.env.NEXT_PUBLIC_GROQ_API_KEY,
+//   dangerouslyAllowBrowser: true,
+// });
+
+// const languages = [
+//   { code: "en", name: "English" },
+//   { code: "bn", name: "Bangla" },
+//   { code: "es", name: "Spanish" },
+//   { code: "fr", name: "French" },
+//   { code: "de", name: "German" },
+//   { code: "zh", name: "Chinese" },
+// ];
+
+// const SignDetectionWithTranslation = () => {
+//   const videoRef = useRef(null);
+//   const [isCameraActive, setIsCameraActive] = useState(false);
+//   const [words, setWords] = useState([]);
+//   const [socket, setSocket] = useState(null);
+//   const [selectedLanguage, setSelectedLanguage] = useState("bn");
+//   const [translatedText, setTranslatedText] = useState("");
+//   const [loading, setLoading] = useState(false);
+
+//   useEffect(() => {
+//     const s = io(modelServerUrl);
+//     s.on("connect", () => console.log("Socket Connected"));
+//     s.on("word", onWordReceived);
+//     s.on("disconnect", () => console.log("Socket Disconnected"));
+//     setSocket(s);
+//     return () => s.disconnect();
+//   }, []);
+
+//   useEffect(() => {
+//     if (words.length > 0) {
+//       handleTranslate();
+//     }
+//   }, [selectedLanguage, words]);
+
+//   const handleTranslate = async () => {
+//     if (!words.length) return;
+//     setLoading(true);
+//     try {
+//       const response = await groq.chat.completions.create({
+//         model: "llama-3.3-70b-versatile",
+//         temperature: 0.7,
+//         max_tokens: 100,
+//         messages: [
+//           {
+//             role: "system",
+//             content: "You are a translation assistant. Translate the provided text into the specified language. Nothing other than the translated text should be given",
+//           },
+//           {
+//             role: "user",
+//             content: `Translate the following sentence to ${languages.find((l) => l.code === selectedLanguage)?.name}: ${words.join(" ")}`,
+//           },
+//         ],
+//       });
+//       setTranslatedText(response.choices[0]?.message?.content || "Translation unavailable.");
+//     } catch (error) {
+//       console.error("Translation error:", error);
+//       setTranslatedText("Error translating text.");
+//     }
+//     setLoading(false);
+//   };
+
+//   const onWordReceived = (data) => {
+//     if (!data.word) return;
+//     setWords((prevWords) => [...prevWords, data.word]);
+//   };
+
+//   return (
+//     <div className="min-h-screen bg-gradient-to-b from-gray-50 to-gray-100">
+//       <Navbar />
+//       <main className="container mx-auto px-4 py-8">
+//         <h1 className="text-4xl font-bold text-gray-900 mb-4 text-center">ASL Recognition with Translation</h1>
+//         {isCameraActive && (
+//           <div className="bg-white rounded-xl p-4 shadow-lg mb-6">
+//             <div className="p-2 rounded min-h-12 w-full">
+//               {words.length === 0 ? (
+//                 <span className="text-gray-400">No signs detected yet</span>
+//               ) : (
+//                 <p className="text-lg font-semibold">Detected: {words.join(" ")}</p>
+//               )}
+//             </div>
+//           </div>
+//         )}
+//         <div className="bg-white rounded-xl p-4 shadow-lg">
+//           <p className="text-gray-600 mb-2">Select Translation Language:</p>
+//           <select value={selectedLanguage} onChange={(e) => setSelectedLanguage(e.target.value)} className="border rounded-md px-3 py-2 w-full mb-4">
+//             {languages.map((lang) => (
+//               <option key={lang.code} value={lang.code}>
+//                 {lang.name}
+//               </option>
+//             ))}
+//           </select>
+//           <button onClick={handleTranslate} disabled={loading} className="px-4 py-2 rounded-md bg-blue-600 text-white disabled:bg-gray-400 mb-4">
+//             {loading ? "Translating..." : "Translate"}
+//           </button>
+//           <p className="text-gray-600 mb-2">Translated Text:</p>
+//           <input type="text" value={translatedText} disabled className="border rounded-md px-3 py-2 w-full mb-4" />
+//         </div>
+//       </main>
+//     </div>
+//   );
+// };
+
+// export default SignDetectionWithTranslation;
