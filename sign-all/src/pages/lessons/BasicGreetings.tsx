@@ -22,7 +22,7 @@ const BasicGreetings = () => {
             description: "The most common greeting in ASL",
             instructions: "Touch your fingers to your forehead, then move your hand outward and away from your body.",
             videoUrl: "https://www.youtube.com/embed/uKKvNqA9N20",
-            imageUrl: "https://www.handspeak.com/word/h/hello.jpg",
+            imageUrl: "https://res.cloudinary.com/spiralyze/image/upload/f_auto,w_auto/BabySignLanguage/DictionaryPages/hello.svg",
             quiz: {
                 question: "Which part of your body do you touch when signing 'Hello'?",
                 options: ["Forehead", "Chin", "Chest", "Shoulder"],
@@ -34,7 +34,7 @@ const BasicGreetings = () => {
             description: "A common way to say farewell",
             instructions: "Start with an open hand, palm facing the person you're addressing, then wave your hand.",
             videoUrl: "https://www.youtube.com/embed/R_WzZx_4Cw0",
-            imageUrl: "https://www.handspeak.com/word/b/bye.jpg",
+            imageUrl: "https://res.cloudinary.com/spiralyze/image/upload/f_auto,w_auto/BabySignLanguage/DictionaryPages/goodbye.svg",
             quiz: {
                 question: "How do you sign 'Goodbye' in ASL?",
                 options: [
@@ -51,7 +51,7 @@ const BasicGreetings = () => {
             description: "Used when making a request or asking for something",
             instructions: "Place your dominant hand flat on your chest and make a circular motion clockwise.",
             videoUrl: "https://www.youtube.com/embed/K0mD_RcESHI",
-            imageUrl: "https://www.handspeak.com/word/p/please.jpg",
+            imageUrl: "https://res.cloudinary.com/spiralyze/image/upload/f_auto,w_auto/BabySignLanguage/DictionaryPages/please.svg",
             quiz: {
                 question: "What motion do you make when signing 'Please'?",
                 options: ["Up and down", "Side to side", "Circular", "Zigzag"],
@@ -64,7 +64,7 @@ const BasicGreetings = () => {
             instructions:
                 "Touch your chin or lips with the fingertips of your dominant hand, then move your hand forward and down.",
             videoUrl: "https://www.youtube.com/embed/3YJ6hyyL4nw",
-            imageUrl: "https://www.handspeak.com/word/t/thankyou.jpg",
+            imageUrl: "https://res.cloudinary.com/spiralyze/image/upload/f_auto,w_auto/BabySignLanguage/DictionaryPages/thank_you.svg",
             quiz: {
                 question: "Where do you start the sign for 'Thank You'?",
                 options: ["Forehead", "Chin or lips", "Chest", "Shoulder"],

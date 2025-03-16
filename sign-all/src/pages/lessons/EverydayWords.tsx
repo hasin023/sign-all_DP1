@@ -31,38 +31,38 @@ const EverydayWords = () => {
         {
             word: "Yes",
             description: "To express agreement or affirmation",
-            imageUrl: "https://www.handspeak.com/word/y/yes.jpg",
+            imageUrl: "https://res.cloudinary.com/spiralyze/image/upload/f_auto,w_auto/BabySignLanguage/DictionaryPages/yes.svg",
         },
         {
             word: "No",
             description: "To express disagreement or negation",
-            imageUrl: "https://www.handspeak.com/word/n/no.jpg",
+            imageUrl: "https://res.cloudinary.com/spiralyze/image/upload/f_auto,w_auto/BabySignLanguage/DictionaryPages/no.svg",
         },
         {
             word: "Sorry",
             description: "To express regret or apologize",
-            imageUrl: "https://www.handspeak.com/word/s/sorry.jpg",
+            imageUrl: "https://res.cloudinary.com/spiralyze/image/upload/f_auto,w_auto/BabySignLanguage/DictionaryPages/sorry.svg",
         },
         {
             word: "Help",
             description: "To request or offer assistance",
-            imageUrl: "https://www.handspeak.com/word/h/help.jpg",
+            imageUrl: "https://res.cloudinary.com/spiralyze/image/upload/f_auto,w_auto/BabySignLanguage/DictionaryPages/help.svg",
         },
         {
             word: "Want",
             description: "To express desire for something",
-            imageUrl: "https://www.handspeak.com/word/w/want.jpg",
+            imageUrl: "https://res.cloudinary.com/spiralyze/image/upload/f_auto,w_auto/BabySignLanguage/DictionaryPages/want.svg",
         },
-        { word: "Need", description: "To express necessity", imageUrl: "https://www.handspeak.com/word/n/need.jpg" },
+        { word: "Need", description: "To express necessity", imageUrl: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSsFQujyNHZMDQKKCXU1gPNJx-0bSznWSoY2Q&s" },
         {
             word: "Like",
             description: "To express preference or enjoyment",
-            imageUrl: "https://www.handspeak.com/word/l/like.jpg",
+            imageUrl: "https://res.cloudinary.com/spiralyze/image/upload/f_auto,w_auto/BabySignLanguage/DictionaryPages/like.svg",
         },
         {
             word: "Don't like",
             description: "To express dislike or aversion",
-            imageUrl: "https://www.handspeak.com/word/d/dontlike.jpg",
+            imageUrl: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTlWyBNdu_-dD0rUXlyh1DejWtC0T4LGXAaIQ&s",
         },
     ]
 
