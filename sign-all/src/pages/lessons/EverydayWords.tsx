@@ -14,7 +14,6 @@ const EverydayWords = () => {
     const router = useRouter()
     const [activeTab, setActiveTab] = useState("learn")
     const [currentWordIndex, setCurrentWordIndex] = useState(0)
-    const [showAnswer, setShowAnswer] = useState(false)
     const [userAnswer, setUserAnswer] = useState("")
     const [isCorrect, setIsCorrect] = useState<boolean | null>(null)
     const [score, setScore] = useState(0)
@@ -135,10 +134,8 @@ const EverydayWords = () => {
     const nextWord = () => {
         if (currentWordIndex < everydayWords.length - 1) {
             setCurrentWordIndex(currentWordIndex + 1)
-            setShowAnswer(false)
         } else {
             setCurrentWordIndex(0)
-            setShowAnswer(false)
         }
     }
 
@@ -146,10 +143,8 @@ const EverydayWords = () => {
     const prevWord = () => {
         if (currentWordIndex > 0) {
             setCurrentWordIndex(currentWordIndex - 1)
-            setShowAnswer(false)
         } else {
             setCurrentWordIndex(everydayWords.length - 1)
-            setShowAnswer(false)
         }
     }
 
@@ -220,43 +215,45 @@ const EverydayWords = () => {
                         transition={{ duration: 0.5 }}
                     >
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-                            <div className="flex flex-col items-center">
-                                <h3 className="text-3xl font-bold text-blue-600 mb-4">{everydayWords[currentWordIndex].word}</h3>
-                                <img
-                                    src={everydayWords[currentWordIndex].imageUrl || "/placeholder.svg"}
-                                    alt={`ASL sign for ${everydayWords[currentWordIndex].word}`}
-                                    className="w-64 h-64 object-contain mb-4"
-                                />
-                                <Button onClick={() => setShowAnswer(!showAnswer)} variant="outline">
-                                    {showAnswer ? "Hide Description" : "Show Description"}
-                                </Button>
+                            <div className="flex flex-col items-center text-center">
+                                <h3 className="text-3xl font-bold text-blue-600 mb-4">
+                                    {everydayWords[currentWordIndex].word}
+                                </h3>
+                                <div className="w-64 h-64 flex justify-center items-center mb-4">
+                                    <img
+                                        src={everydayWords[currentWordIndex].imageUrl || "/placeholder.svg"}
+                                        alt={`ASL sign for ${everydayWords[currentWordIndex].word}`}
+                                        className="max-w-full max-h-full object-contain"
+                                    />
+                                </div>
                             </div>
 
-                            <div className="flex flex-col justify-center">
-                                {showAnswer && (
-                                    <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="bg-gray-50 p-6 rounded-lg">
-                                        <h4 className="text-xl font-semibold text-gray-800 mb-2">Description</h4>
-                                        <p className="text-gray-700 mb-4">{everydayWords[currentWordIndex].description}</p>
 
-                                        <h4 className="text-xl font-semibold text-gray-800 mb-2">How to Sign</h4>
-                                        <p className="text-gray-700">
-                                            {currentWordIndex === 0 &&
-                                                "Make a fist with your dominant hand, then bob your hand up and down as if nodding your head."}
-                                            {currentWordIndex === 1 && "Extend your index and middle fingers, then tap them together."}
-                                            {currentWordIndex === 2 &&
-                                                "Make a fist with your dominant hand, then rub it in a circular motion on your chest."}
-                                            {currentWordIndex === 3 &&
-                                                "Make a thumbs up with your non-dominant hand, then place your dominant hand under it and lift both hands up."}
-                                            {currentWordIndex === 4 &&
-                                                "Hold your hands in front of you with fingers spread, then pull them toward your body."}
-                                            {currentWordIndex === 5 && "Both hands in claw shape, pull down toward your body."}
-                                            {currentWordIndex === 6 &&
-                                                "Extend your thumb and index finger from a fist on both hands, then bring your dominant hand down onto your non-dominant hand."}
-                                            {currentWordIndex === 7 &&
-                                                "Sign 'like' then shake your head and change your facial expression to negative."}
-                                        </p>
-                                    </motion.div>
-                                )}
+                            <div className="flex flex-col justify-center">
+
+                                <div className="bg-gray-50 p-6 rounded-lg">
+                                    <h4 className="text-xl font-semibold text-gray-800 mb-2">Description</h4>
+                                    <p className="text-gray-700 mb-4">{everydayWords[currentWordIndex].description}</p>
+
+                                    <h4 className="text-xl font-semibold text-gray-800 mb-2">How to Sign</h4>
+                                    <p className="text-gray-700">
+                                        {currentWordIndex === 0 &&
+                                            "Make a fist with your dominant hand, then bob your hand up and down as if nodding your head."}
+                                        {currentWordIndex === 1 && "Extend your index and middle fingers, then tap them together."}
+                                        {currentWordIndex === 2 &&
+                                            "Make a fist with your dominant hand, then rub it in a circular motion on your chest."}
+                                        {currentWordIndex === 3 &&
+                                            "Make a thumbs up with your non-dominant hand, then place your dominant hand under it and lift both hands up."}
+                                        {currentWordIndex === 4 &&
+                                            "Hold your hands in front of you with fingers spread, then pull them toward your body."}
+                                        {currentWordIndex === 5 && "Both hands in claw shape, pull down toward your body."}
+                                        {currentWordIndex === 6 &&
+                                            "Extend your thumb and index finger from a fist on both hands, then bring your dominant hand down onto your non-dominant hand."}
+                                        {currentWordIndex === 7 &&
+                                            "Sign 'like' then shake your head and change your facial expression to negative."}
+                                    </p>
+                                </div>
+
                             </div>
                         </div>
                     </motion.div>
