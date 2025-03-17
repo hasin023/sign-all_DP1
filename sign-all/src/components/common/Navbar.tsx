@@ -17,7 +17,7 @@ import { Menu, User, LogOut } from "lucide-react"
 const Navbar = () => {
   const { user, error, isLoading } = useUser()
 
-  console.log(user);
+  // console.log(user);
 
   return (
     <header className="bg-white text-gray-800 shadow-md">
@@ -29,7 +29,11 @@ const Navbar = () => {
         <nav className="hidden md:flex items-center space-x-6">
           <NavLink href="/detection">Sign Detection</NavLink>
           <NavLink href="/dictionary">Dictionary</NavLink>
-          <NavLink href="/quiz">Quiz</NavLink>
+          {user ? (
+            <NavLink href="/roadmap">Roadmap</NavLink>
+          ) : (
+            <NavLink href="/quiz">Quiz</NavLink>
+          )}
           {!user ? (
             <Button asChild variant="default" className="border border-gray-300 dark:border-gray-700">
               <Link href="/api/auth/login">Login</Link>
@@ -107,7 +111,13 @@ const MobileMenu = ({ user }: { user: any }) => (
         <Link href="/dictionary">Dictionary</Link>
       </DropdownMenuItem>
       <DropdownMenuItem asChild>
-        <Link href="/quiz">Quiz</Link>
+        {
+          user ? (
+            <Link href="/roadmap">Roadmap</Link>
+          ) : (
+            <Link href="/quiz">Quiz</Link>
+          )
+        }
       </DropdownMenuItem>
       <DropdownMenuSeparator />
       {user ? (
