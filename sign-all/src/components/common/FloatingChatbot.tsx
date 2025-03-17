@@ -205,7 +205,7 @@ const FloatingChatbot = () => {
           <div className="relative bg-gradient-to-r from-red-600 to-red-700 text-white p-4 rounded-t-2xl flex items-center justify-between">
             <div className="flex items-center gap-3">
               <div className="bg-white p-2 rounded-full shadow-md">
-                <img src="/chatbot.png" alt="SignBuddy Logo" className="w-10 h-10 object-contain" />
+                <img src="/Chatbot.png" alt="SignBuddy Logo" className="w-10 h-10 object-contain" />
               </div>
               <div>
                 <h1 className="text-xl font-bold">SignBuddy</h1>

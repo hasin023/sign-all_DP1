@@ -7,6 +7,7 @@ import { io, Socket } from "socket.io-client";
 import { HiMiniSpeakerWave, HiMiniSpeakerXMark } from "react-icons/hi2";
 import Navbar from "@/components/common/Navbar";
 import { Groq } from "groq-sdk";
+import FloatingChatbot from "@/components/common/FloatingChatbot";
 
 const poppins = Poppins({ weight: ['400', '600', '800'], subsets: ['latin'] })
 
@@ -209,16 +210,15 @@ function SignDetection() {
         <title>Detect Signs - Sign All</title>
       </Head>
       <div className={`${poppins.className} min-h-screen bg-gray-50`}>
+        <FloatingChatbot />
         <Navbar />
         <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
           <div className="text-center mb-10">
-            <h1 className="text-4xl md:text-5xl font-bold text-gray-900 mb-4">
+            <h1 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">
               <span className="text-red-600">ASL</span> Detection & Translation
             </h1>
             <div className="h-1 w-24 bg-red-500 mx-auto mb-6 rounded-full"></div>
-            <p className="text-lg text-gray-700 max-w-3xl mx-auto">
-              Detect American Sign Language gestures in real-time. Our custom AI translates sign language into text instantly and supports multiple languages.
-            </p>
+
           </div>
 
           {enableCam && (
@@ -226,10 +226,10 @@ function SignDetection() {
               <div className="flex items-center gap-4 justify-between mb-4">
                 <div className="p-3 rounded-lg border border-gray-200 min-h-12 w-full bg-gray-50">
                   {words.length === 0 && (
-                    <span className="text-gray-400 italic">No signs detected yet...</span>
+                    <span className="text-gray-400 italic text-lg">No signs detected yet...</span>
                   )}
                   {words.map((word, i) => (
-                    <span key={`${word} ${i}`} className="inline-block bg-red-50 text-red-700 px-3 py-1 rounded-full mr-2 mb-2 text-sm font-medium border border-red-100">
+                    <span key={`${word} ${i}`} className="inline-block bg-red-50 text-red-700 px-4 py-2 rounded-full mr-2 mb-2 text-base md:text-lg font-medium border border-red-100">
                       {word}
                     </span>
                   ))}
@@ -246,11 +246,11 @@ function SignDetection() {
               {/* Translation section */}
               <div className="bg-gray-50 rounded-lg p-3 mb-4">
                 <div className="flex flex-col sm:flex-row sm:items-center gap-4 mb-3">
-                  <label className="text-gray-700 font-medium">Translate to:</label>
+                  <label className="text-gray-700 font-medium text-lg">Translate to:</label>
                   <select
                     value={selectedLanguage}
                     onChange={(e) => setSelectedLanguage(e.target.value)}
-                    className="border border-gray-300 rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-red-500"
+                    className="border border-gray-300 rounded-md px-3 py-2 text-base focus:outline-none focus:ring-2 focus:ring-red-500"
                   >
                     {languages.map((lang) => (
                       <option key={lang.code} value={lang.code}>{lang.name}</option>
@@ -258,15 +258,15 @@ function SignDetection() {
                   </select>
                 </div>
 
-                <div className="p-3 border border-gray-200 bg-white rounded-lg min-h-12">
+                <div className="p-4 border border-gray-200 bg-white rounded-lg min-h-16">
                   {isTranslating ? (
-                    <span className="text-gray-500 italic">Translating...</span>
+                    <span className="text-gray-500 italic text-lg">Translating...</span>
                   ) : translatedText ? (
-                    <p className="text-gray-800">{translatedText}</p>
+                    <p className="text-gray-800 text-lg md:text-xl font-medium">{translatedText}</p>
                   ) : selectedLanguage === "en" ? (
-                    <span className="text-gray-500 italic">Select another language for translation</span>
+                    <span className="text-gray-500 italic text-lg">Select another language for translation</span>
                   ) : (
-                    <span className="text-gray-500 italic">Translation will appear here</span>
+                    <span className="text-gray-500 italic text-lg">Translation will appear here</span>
                   )}
                 </div>
               </div>
@@ -275,7 +275,7 @@ function SignDetection() {
                 <div className="mt-3">
                   <button
                     onClick={clearWords}
-                    className="px-4 py-2 bg-red-600 hover:bg-red-700 transition-colors text-white text-sm font-medium rounded-lg shadow-sm"
+                    className="px-4 py-2 bg-red-600 hover:bg-red-700 transition-colors text-white text-base font-medium rounded-lg shadow-sm"
                   >
                     Clear Text
                   </button>
@@ -338,11 +338,9 @@ function SignDetection() {
           </div>
 
           {!enableCam && (
-            <div className="bg-white rounded-xl shadow-md p-6 mt-8 max-w-2xl mx-auto text-center">
+            <div className="bg-white rounded-xl shadow-md p-6 mt-8 max-w-3xl mx-auto text-center">
               <div className="mb-6">
-                <div className="inline-flex items-center justify-center p-4 bg-red-50 rounded-full mb-4">
-                  <FaVideo size={30} className="text-red-500" />
-                </div>
+
                 <h3 className="text-xl font-semibold text-gray-800">Start Detecting Sign Language</h3>
                 <p className="text-gray-600 mt-2">
                   Click the camera button to begin real-time ASL detection. Our AI will analyze your gestures and convert them into text and translate to your preferred language.
