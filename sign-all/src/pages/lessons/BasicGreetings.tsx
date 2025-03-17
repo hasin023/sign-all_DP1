@@ -21,7 +21,7 @@ const BasicGreetings = () => {
             title: "Hello",
             description: "The most common greeting in ASL",
             instructions: "Touch your fingers to your forehead, then move your hand outward and away from your body.",
-            videoUrl: "https://www.youtube.com/embed/uKKvNqA9N20",
+            videoUrl: "https://www.handspeak.com/word/h/hel/hello.mp4",
             imageUrl: "https://res.cloudinary.com/spiralyze/image/upload/f_auto,w_auto/BabySignLanguage/DictionaryPages/hello.svg",
             quiz: {
                 question: "Which part of your body do you touch when signing 'Hello'?",
@@ -33,7 +33,7 @@ const BasicGreetings = () => {
             title: "Goodbye",
             description: "A common way to say farewell",
             instructions: "Start with an open hand, palm facing the person you're addressing, then wave your hand.",
-            videoUrl: "https://www.youtube.com/embed/R_WzZx_4Cw0",
+            videoUrl: "https://www.handspeak.com/word/g/goo/good-bye.mp4",
             imageUrl: "https://res.cloudinary.com/spiralyze/image/upload/f_auto,w_auto/BabySignLanguage/DictionaryPages/goodbye.svg",
             quiz: {
                 question: "How do you sign 'Goodbye' in ASL?",
@@ -50,7 +50,7 @@ const BasicGreetings = () => {
             title: "Please",
             description: "Used when making a request or asking for something",
             instructions: "Place your dominant hand flat on your chest and make a circular motion clockwise.",
-            videoUrl: "https://www.youtube.com/embed/K0mD_RcESHI",
+            videoUrl: "https://www.handspeak.com/word/p/ple/please.mp4",
             imageUrl: "https://res.cloudinary.com/spiralyze/image/upload/f_auto,w_auto/BabySignLanguage/DictionaryPages/please.svg",
             quiz: {
                 question: "What motion do you make when signing 'Please'?",
@@ -63,7 +63,7 @@ const BasicGreetings = () => {
             description: "Expressing gratitude",
             instructions:
                 "Touch your chin or lips with the fingertips of your dominant hand, then move your hand forward and down.",
-            videoUrl: "https://www.youtube.com/embed/3YJ6hyyL4nw",
+            videoUrl: "https://www.handspeak.com/word/p/ple/please.mp4",
             imageUrl: "https://res.cloudinary.com/spiralyze/image/upload/f_auto,w_auto/BabySignLanguage/DictionaryPages/thank_you.svg",
             quiz: {
                 question: "Where do you start the sign for 'Thank You'?",
@@ -135,12 +135,16 @@ const BasicGreetings = () => {
                                             <p className="text-gray-700 mb-4">{currentGreeting.instructions}</p>
 
                                             <div className="relative aspect-video mb-4 bg-gray-100 rounded-lg overflow-hidden">
-                                                <iframe
-                                                    src={currentGreeting.videoUrl}
+                                                <video
+                                                    src={`/api/proxy-video?url=${currentGreeting.videoUrl}`}
                                                     title={`ASL sign for ${currentGreeting.title}`}
-                                                    className="absolute inset-0 w-full h-full"
-                                                    allowFullScreen
-                                                ></iframe>
+                                                    className="w-full h-full"
+                                                    width="800px"
+                                                    height="450px"
+                                                    controls
+                                                    controlsList="nodownload"
+                                                    onContextMenu={() => false}
+                                                ></video>
                                             </div>
 
                                             <div className="flex justify-center space-x-4">
