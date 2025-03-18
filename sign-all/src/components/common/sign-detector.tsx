@@ -156,9 +156,9 @@ export default function SignDetector({ currentLetter, onDetection }: SignDetecto
     return (
         <div className={`${poppins.className} w-full`}>
             {enableCam && (
-                <div className="bg-white rounded-xl shadow-md p-4 mb-6">
-                    <div className="flex items-center gap-4 justify-between mb-4">
-                        <div className="p-3 rounded-lg border border-gray-200 min-h-12 w-full bg-gray-50">
+                <div className="bg-white rounded-lg shadow-md p-2 mb-3">
+                    <div className="flex items-center gap-4 justify-between mb-1">
+                        <div className="p-2 rounded-lg border border-gray-200 min-h-12 w-full bg-gray-50">
                             {words.length === 0 && <span className="text-gray-400 italic text-lg">No signs detected yet...</span>}
                             {words.map((word, i) => (
                                 <span
@@ -178,7 +178,7 @@ export default function SignDetector({ currentLetter, onDetection }: SignDetecto
                         <div className="mt-3">
                             <button
                                 onClick={clearWords}
-                                className="px-4 py-2 bg-red-600 hover:bg-red-700 transition-colors text-white text-base font-medium rounded-lg shadow-sm"
+                                className="px-2 py-1 bg-red-600 hover:bg-red-700 transition-colors text-white text-base font-medium rounded-lg shadow-sm"
                             >
                                 Clear Text
                             </button>
@@ -196,18 +196,18 @@ export default function SignDetector({ currentLetter, onDetection }: SignDetecto
                         {enableCam ? (
                             <button
                                 onClick={stopCam}
-                                className="bg-red-600 hover:bg-red-700 shadow-lg text-white p-4 rounded-full transition-all"
+                                className="bg-red-600 hover:bg-red-700 shadow-lg text-white p-2 rounded-full transition-all"
                                 title="Stop camera"
                             >
-                                <FaVideoSlash size={22} />
+                                <FaVideoSlash size={15} />
                             </button>
                         ) : (
                             <button
                                 onClick={startCam}
-                                className="bg-red-600 hover:bg-red-700 shadow-lg text-white p-4 rounded-full transition-all"
+                                className="bg-red-600 hover:bg-red-700 shadow-lg text-white p-2 rounded-full transition-all"
                                 title="Start camera"
                             >
-                                <FaVideo size={22} />
+                                <FaVideo size={18} />
                             </button>
                         )}
                     </div>

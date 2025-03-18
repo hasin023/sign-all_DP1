@@ -1,11 +1,12 @@
 import LessonLayout from "@/components/LessonLayout"
 import { Button } from "@/components/ui/button"
 import { useRouter } from "next/navigation"
-import { useState } from "react"
+import { useState, useRef, useEffect } from "react"
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { motion, AnimatePresence } from "framer-motion"
-import { CheckCircle, XCircle, Play, Pause, Volume2 } from "lucide-react"
+import { Play, Pause, Volume2 } from "lucide-react"
+import SignDetector from "@/components/common/sign-detector"
 
 const BasicGreetings = () => {
     const router = useRouter()
@@ -14,6 +15,8 @@ const BasicGreetings = () => {
     const [selectedAnswer, setSelectedAnswer] = useState<string | null>(null)
     const [isCorrect, setIsCorrect] = useState<boolean | null>(null)
     const [isPlaying, setIsPlaying] = useState(false)
+    const [lastDetectedSign, setLastDetectedSign] = useState("")
+    const timeoutRef = useRef<NodeJS.Timeout | null>(null)
 
     // Greeting data
     const greetings = {
@@ -22,7 +25,8 @@ const BasicGreetings = () => {
             description: "The most common greeting in ASL",
             instructions: "Touch your fingers to your forehead, then move your hand outward and away from your body.",
             videoUrl: "https://www.handspeak.com/word/h/hel/hello.mp4",
-            imageUrl: "https://res.cloudinary.com/spiralyze/image/upload/f_auto,w_auto/BabySignLanguage/DictionaryPages/hello.svg",
+            imageUrl:
+                "https://res.cloudinary.com/spiralyze/image/upload/f_auto,w_auto/BabySignLanguage/DictionaryPages/hello.svg",
             quiz: {
                 question: "Which part of your body do you touch when signing 'Hello'?",
                 options: ["Forehead", "Chin", "Chest", "Shoulder"],
@@ -34,7 +38,8 @@ const BasicGreetings = () => {
             description: "A common way to say farewell",
             instructions: "Start with an open hand, palm facing the person you're addressing, then wave your hand.",
             videoUrl: "https://www.handspeak.com/word/g/goo/good-bye.mp4",
-            imageUrl: "https://res.cloudinary.com/spiralyze/image/upload/f_auto,w_auto/BabySignLanguage/DictionaryPages/goodbye.svg",
+            imageUrl:
+                "https://res.cloudinary.com/spiralyze/image/upload/f_auto,w_auto/BabySignLanguage/DictionaryPages/goodbye.svg",
             quiz: {
                 question: "How do you sign 'Goodbye' in ASL?",
                 options: [
@@ -51,7 +56,8 @@ const BasicGreetings = () => {
             description: "Used when making a request or asking for something",
             instructions: "Place your dominant hand flat on your chest and make a circular motion clockwise.",
             videoUrl: "https://www.handspeak.com/word/p/ple/please.mp4",
-            imageUrl: "https://res.cloudinary.com/spiralyze/image/upload/f_auto,w_auto/BabySignLanguage/DictionaryPages/please.svg",
+            imageUrl:
+                "https://res.cloudinary.com/spiralyze/image/upload/f_auto,w_auto/BabySignLanguage/DictionaryPages/please.svg",
             quiz: {
                 question: "What motion do you make when signing 'Please'?",
                 options: ["Up and down", "Side to side", "Circular", "Zigzag"],
@@ -64,7 +70,8 @@ const BasicGreetings = () => {
             instructions:
                 "Touch your chin or lips with the fingertips of your dominant hand, then move your hand forward and down.",
             videoUrl: "https://www.handspeak.com/word/p/ple/please.mp4",
-            imageUrl: "https://res.cloudinary.com/spiralyze/image/upload/f_auto,w_auto/BabySignLanguage/DictionaryPages/thank_you.svg",
+            imageUrl:
+                "https://res.cloudinary.com/spiralyze/image/upload/f_auto,w_auto/BabySignLanguage/DictionaryPages/thank_you.svg",
             quiz: {
                 question: "Where do you start the sign for 'Thank You'?",
                 options: ["Forehead", "Chin or lips", "Chest", "Shoulder"],
@@ -75,6 +82,30 @@ const BasicGreetings = () => {
 
     // Get current greeting data
     const currentGreeting = greetings[activeTab as keyof typeof greetings]
+
+    // Handle detected signs from the SignDetector component
+    const handleDetectedSign = (sign: string) => {
+        if (!sign) return // Skip empty detections
+
+        console.log("Detection received:", sign)
+        setLastDetectedSign(sign)
+
+        // Only process if we're in quiz mode and haven't checked yet
+        if (showQuiz && isCorrect === null) {
+            // Check if the detected sign matches the current greeting
+            const detectedUpper = sign.toUpperCase().trim()
+            const currentUpper = currentGreeting.title.toUpperCase().trim()
+
+            if (detectedUpper === currentUpper) {
+                setIsCorrect(true)
+
+                // Clear any previous timeout
+                if (timeoutRef.current) {
+                    clearTimeout(timeoutRef.current)
+                }
+            }
+        }
+    }
 
     // Handle answer selection
     const handleAnswerSelect = (answer: string) => {
@@ -88,12 +119,22 @@ const BasicGreetings = () => {
         setShowQuiz(false)
         setSelectedAnswer(null)
         setIsCorrect(null)
+        setLastDetectedSign("")
     }
 
     // Toggle video playback
     const togglePlayback = () => {
         setIsPlaying(!isPlaying)
     }
+
+    // Clean up timeout on unmount
+    useEffect(() => {
+        return () => {
+            if (timeoutRef.current) {
+                clearTimeout(timeoutRef.current)
+            }
+        }
+    }, [])
 
     return (
         <LessonLayout title="Common Greetings in ASL">
@@ -172,31 +213,21 @@ const BasicGreetings = () => {
                                                 </Button>
                                             ) : (
                                                 <div className="w-full bg-gray-50 p-4 rounded-lg">
-                                                    <h3 className="text-lg font-semibold mb-3">{currentGreeting.quiz.question}</h3>
-                                                    <div className="space-y-2">
-                                                        {currentGreeting.quiz.options.map((option) => (
-                                                            <div
-                                                                key={option}
-                                                                className={`p-3 rounded-lg cursor-pointer transition-all ${selectedAnswer === option
-                                                                    ? selectedAnswer === currentGreeting.quiz.correctAnswer
-                                                                        ? "bg-green-100 border border-green-500"
-                                                                        : "bg-red-100 border border-red-500"
-                                                                    : "bg-white border border-gray-300 hover:bg-gray-100"
-                                                                    }`}
-                                                                onClick={() => handleAnswerSelect(option)}
-                                                            >
-                                                                <div className="flex items-center">
-                                                                    <span className="flex-grow">{option}</span>
-                                                                    {selectedAnswer === option &&
-                                                                        (selectedAnswer === currentGreeting.quiz.correctAnswer ? (
-                                                                            <CheckCircle className="h-5 w-5 text-green-600" />
-                                                                        ) : (
-                                                                            <XCircle className="h-5 w-5 text-red-600" />
-                                                                        ))}
-                                                                </div>
-                                                            </div>
-                                                        ))}
+                                                    <h3 className="text-lg font-semibold mb-3">
+                                                        Sign "{currentGreeting.title}" and let our AI detect it
+                                                    </h3>
+
+                                                    <div className="w-full mb-4">
+                                                        <SignDetector currentLetter={currentGreeting.title} onDetection={handleDetectedSign} />
                                                     </div>
+
+                                                    {lastDetectedSign && (
+                                                        <div className="mt-4 p-3 bg-blue-50 rounded-lg mb-4">
+                                                            <p className="font-medium text-center">
+                                                                Last detected: <span className="text-blue-700 font-bold">{lastDetectedSign}</span>
+                                                            </p>
+                                                        </div>
+                                                    )}
 
                                                     {isCorrect !== null && (
                                                         <div
@@ -205,14 +236,26 @@ const BasicGreetings = () => {
                                                             {isCorrect ? (
                                                                 <p>Correct! Well done!</p>
                                                             ) : (
-                                                                <p>Incorrect. The correct answer is "{currentGreeting.quiz.correctAnswer}".</p>
+                                                                <p>Keep practicing! Try to sign "{currentGreeting.title}" clearly.</p>
                                                             )}
                                                         </div>
                                                     )}
 
-                                                    <Button onClick={() => setShowQuiz(false)} variant="outline" className="mt-4">
-                                                        Back to Lesson
-                                                    </Button>
+                                                    <div className="flex justify-between mt-4">
+                                                        <Button onClick={() => setShowQuiz(false)} variant="outline">
+                                                            Back to Lesson
+                                                        </Button>
+
+                                                        <Button
+                                                            onClick={() => {
+                                                                setIsCorrect(null)
+                                                                setLastDetectedSign("")
+                                                            }}
+                                                            variant="outline"
+                                                        >
+                                                            Try Again
+                                                        </Button>
+                                                    </div>
                                                 </div>
                                             )}
                                         </div>
@@ -281,55 +324,6 @@ const BasicGreetings = () => {
                         <li>Practice responding appropriately to each greeting</li>
                         <li>Try recording yourself having a similar conversation</li>
                     </ol>
-                </div>
-            </div>
-
-            {/* Mirror Practice Tool */}
-            <div className="bg-purple-50 p-6 rounded-lg shadow-md mb-8">
-                <h3 className="text-xl font-bold text-purple-800 mb-4">Mirror Practice Tool</h3>
-                <p className="text-gray-700 mb-4">
-                    Use your device's camera to practice signing greetings and see yourself sign.
-                </p>
-
-                <div className="bg-white p-4 rounded-lg text-center">
-                    <Button
-                        onClick={() => {
-                            // Simple permission check and webcam display
-                            if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
-                                // Create video element if it doesn't exist
-                                let videoElement = document.getElementById("mirror-practice")
-                                if (!videoElement) {
-                                    videoElement = document.createElement("video")
-                                    videoElement.id = "mirror-practice"
-                                    videoElement.width = 640
-                                    videoElement.height = 480
-                                    videoElement.autoplay = true
-                                    videoElement.className = "mx-auto mt-4 rounded-lg border border-gray-300"
-                                    document.getElementById("mirror-container")?.appendChild(videoElement)
-                                }
-
-                                // Get webcam feed
-                                navigator.mediaDevices
-                                    .getUserMedia({ video: true })
-                                    .then((stream) => {
-                                        if (videoElement instanceof HTMLVideoElement) {
-                                            videoElement.srcObject = stream
-                                        }
-                                    })
-                                    .catch((err) => {
-                                        console.log("An error occurred: " + err)
-                                        alert("Could not access webcam. Please check permissions.")
-                                    })
-                            } else {
-                                alert("Your browser doesn't support webcam access.")
-                            }
-                        }}
-                        className="bg-purple-600 hover:bg-purple-700"
-                    >
-                        Start Mirror Practice
-                    </Button>
-                    <div id="mirror-container" className="mt-4"></div>
-                    <p className="text-xs text-gray-500 mt-2">Webcam access is required for this feature.</p>
                 </div>
             </div>
 

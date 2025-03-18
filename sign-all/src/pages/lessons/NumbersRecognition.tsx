@@ -1,12 +1,13 @@
 import LessonLayout from "@/components/LessonLayout"
 import { Button } from "@/components/ui/button"
 import { useRouter } from "next/navigation"
-import { useState, useEffect } from "react"
+import { useState, useEffect, useRef } from "react"
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { motion, AnimatePresence } from "framer-motion"
 import { Progress } from "@/components/ui/progress"
 import { Badge } from "@/components/ui/badge"
 import { CheckCircle, XCircle, ArrowRight, ArrowLeft } from "lucide-react"
+import SignDetector from "@/components/common/sign-detector"
 
 const NumbersRecognition = () => {
     const router = useRouter()
@@ -18,6 +19,8 @@ const NumbersRecognition = () => {
     const [score, setScore] = useState(0)
     const [attempts, setAttempts] = useState(0)
     const [showHint, setShowHint] = useState(false)
+    const [lastDetectedSign, setLastDetectedSign] = useState("")
+    const timeoutRef = useRef<NodeJS.Timeout | null>(null)
 
     // Define number ranges for each tab
     const numberRanges = {
@@ -47,6 +50,33 @@ const NumbersRecognition = () => {
         setIsCorrect(null)
         setScore(0)
         setAttempts(0)
+        setLastDetectedSign("")
+    }
+
+    // Handle detected signs from the SignDetector component
+    const handleDetectedSign = (sign: string) => {
+        if (!sign) return // Skip empty detections
+
+        console.log("Detection received:", sign)
+        setLastDetectedSign(sign)
+
+        // Only process if we're in practice mode and haven't checked yet
+        if (mode === "practice" && isCorrect === null) {
+            // Try to convert the detected sign to a number
+            const detectedNumber = Number.parseInt(sign.trim())
+
+            // Check if it's a valid number and matches the current number
+            if (!isNaN(detectedNumber) && detectedNumber === currentNumber) {
+                setIsCorrect(true)
+                setAttempts((prev) => prev + 1)
+                setScore((prev) => prev + 1)
+
+                // Clear any previous timeout
+                if (timeoutRef.current) {
+                    clearTimeout(timeoutRef.current)
+                }
+            }
+        }
     }
 
     // Check the user's guess
@@ -65,6 +95,7 @@ const NumbersRecognition = () => {
         setCurrentNumber(getRandomNumber())
         setUserGuess("")
         setIsCorrect(null)
+        setLastDetectedSign("")
     }
 
     // Move to the next number in learn mode
@@ -110,6 +141,15 @@ const NumbersRecognition = () => {
         setMode("learn")
         setShowHint(false)
     }, [activeTab])
+
+    // Clean up timeout on unmount
+    useEffect(() => {
+        return () => {
+            if (timeoutRef.current) {
+                clearTimeout(timeoutRef.current)
+            }
+        }
+    }, [])
 
     // Replace placeholder image URLs with real URLs
     // Add this function to get number sign images
@@ -304,23 +344,29 @@ const NumbersRecognition = () => {
                         >
                             {isCorrect === null ? (
                                 <>
-                                    <h3 className="text-xl font-semibold text-gray-700 mb-6">What number is this?</h3>
-                                    <img
-                                        src={getNumberImageUrl(currentNumber) || "/placeholder.svg"}
-                                        alt="ASL number"
-                                        className="w-64 h-64 object-contain mb-6"
-                                    />
-                                    <div className="w-full max-w-md mb-4">
-                                        <input
-                                            type="number"
-                                            value={userGuess}
-                                            onChange={(e) => setUserGuess(e.target.value)}
-                                            className="border border-gray-300 rounded-md px-4 py-2 w-full text-center text-xl"
-                                            placeholder="Enter number"
-                                        />
+                                    <h3 className="text-xl font-semibold text-gray-700 mb-6">Sign this number:</h3>
+                                    <div className="text-6xl font-bold text-blue-600 mb-6">{currentNumber}</div>
+
+                                    <div className="w-full max-w-md mb-6">
+                                        <SignDetector currentLetter={currentNumber.toString()} onDetection={handleDetectedSign} />
                                     </div>
-                                    <Button onClick={checkGuess} size="lg">
-                                        Check Answer
+
+                                    {lastDetectedSign && (
+                                        <div className="mt-4 p-3 bg-blue-50 rounded-lg mb-4">
+                                            <p className="font-medium text-center">
+                                                Last detected: <span className="text-blue-700 font-bold">{lastDetectedSign}</span>
+                                            </p>
+                                        </div>
+                                    )}
+
+                                    <Button
+                                        onClick={() => {
+                                            setIsCorrect(false)
+                                            setAttempts((prev) => prev + 1)
+                                        }}
+                                        size="lg"
+                                    >
+                                        Skip
                                     </Button>
                                 </>
                             ) : (
@@ -337,10 +383,10 @@ const NumbersRecognition = () => {
                                             <div className="flex flex-col items-center">
                                                 <div className="flex items-center mb-2">
                                                     <XCircle className="h-6 w-6 mr-2" />
-                                                    <span className="text-lg">Incorrect!</span>
+                                                    <span className="text-lg">Let's try another number!</span>
                                                 </div>
                                                 <div className="text-lg">
-                                                    The correct number is <span className="font-bold">{currentNumber}</span>
+                                                    The correct number was <span className="font-bold">{currentNumber}</span>
                                                 </div>
                                             </div>
                                         )}

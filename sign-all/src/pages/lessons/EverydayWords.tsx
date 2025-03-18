@@ -1,14 +1,13 @@
-"use client"
-
 import LessonLayout from "@/components/LessonLayout"
 import { Button } from "@/components/ui/button"
 import { useRouter } from "next/router"
-import { useState, useEffect } from "react"
+import { useState, useEffect, useRef } from "react"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { motion, AnimatePresence } from "framer-motion"
 import { Badge } from "@/components/ui/badge"
 import { CheckCircle, XCircle, ArrowRight, ArrowLeft, RefreshCw } from "lucide-react"
 import { Progress } from "@/components/ui/progress"
+import SignDetector from "@/components/common/sign-detector"
 
 const EverydayWords = () => {
     const router = useRouter()
@@ -24,39 +23,51 @@ const EverydayWords = () => {
     const [gameCompleted, setGameCompleted] = useState(false)
     const [gameStartTime, setGameStartTime] = useState<number | null>(null)
     const [gameEndTime, setGameEndTime] = useState<number | null>(null)
+    const [lastDetectedSign, setLastDetectedSign] = useState("")
+    const timeoutRef = useRef<NodeJS.Timeout | null>(null)
 
     // Everyday words data
     const everydayWords = [
         {
             word: "Yes",
             description: "To express agreement or affirmation",
-            imageUrl: "https://res.cloudinary.com/spiralyze/image/upload/f_auto,w_auto/BabySignLanguage/DictionaryPages/yes.svg",
+            imageUrl:
+                "https://res.cloudinary.com/spiralyze/image/upload/f_auto,w_auto/BabySignLanguage/DictionaryPages/yes.svg",
         },
         {
             word: "No",
             description: "To express disagreement or negation",
-            imageUrl: "https://res.cloudinary.com/spiralyze/image/upload/f_auto,w_auto/BabySignLanguage/DictionaryPages/no.svg",
+            imageUrl:
+                "https://res.cloudinary.com/spiralyze/image/upload/f_auto,w_auto/BabySignLanguage/DictionaryPages/no.svg",
         },
         {
             word: "Sorry",
             description: "To express regret or apologize",
-            imageUrl: "https://res.cloudinary.com/spiralyze/image/upload/f_auto,w_auto/BabySignLanguage/DictionaryPages/sorry.svg",
+            imageUrl:
+                "https://res.cloudinary.com/spiralyze/image/upload/f_auto,w_auto/BabySignLanguage/DictionaryPages/sorry.svg",
         },
         {
             word: "Help",
             description: "To request or offer assistance",
-            imageUrl: "https://res.cloudinary.com/spiralyze/image/upload/f_auto,w_auto/BabySignLanguage/DictionaryPages/help.svg",
+            imageUrl:
+                "https://res.cloudinary.com/spiralyze/image/upload/f_auto,w_auto/BabySignLanguage/DictionaryPages/help.svg",
         },
         {
             word: "Want",
             description: "To express desire for something",
-            imageUrl: "https://res.cloudinary.com/spiralyze/image/upload/f_auto,w_auto/BabySignLanguage/DictionaryPages/want.svg",
+            imageUrl:
+                "https://res.cloudinary.com/spiralyze/image/upload/f_auto,w_auto/BabySignLanguage/DictionaryPages/want.svg",
         },
-        { word: "Need", description: "To express necessity", imageUrl: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSsFQujyNHZMDQKKCXU1gPNJx-0bSznWSoY2Q&s" },
+        {
+            word: "Need",
+            description: "To express necessity",
+            imageUrl: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSsFQujyNHZMDQKKCXU1gPNJx-0bSznWSoY2Q&s",
+        },
         {
             word: "Like",
             description: "To express preference or enjoyment",
-            imageUrl: "https://res.cloudinary.com/spiralyze/image/upload/f_auto,w_auto/BabySignLanguage/DictionaryPages/like.svg",
+            imageUrl:
+                "https://res.cloudinary.com/spiralyze/image/upload/f_auto,w_auto/BabySignLanguage/DictionaryPages/like.svg",
         },
         {
             word: "Don't like",
@@ -65,12 +76,47 @@ const EverydayWords = () => {
         },
     ]
 
+    // Handle detected signs from the SignDetector component
+    const handleDetectedSign = (sign: string) => {
+        if (!sign) return // Skip empty detections
+
+        console.log("Detection received:", sign)
+        setLastDetectedSign(sign)
+
+        // Only process if we're in quiz mode and haven't checked yet
+        if (activeTab === "quiz" && isCorrect === null) {
+            // Check if the detected sign matches the current word
+            const detectedUpper = sign.toUpperCase().trim()
+            const currentUpper = everydayWords[currentWordIndex].word.toUpperCase().trim()
+
+            if (detectedUpper === currentUpper) {
+                setIsCorrect(true)
+                setAttempts((prev) => prev + 1)
+                setScore((prev) => prev + 1)
+
+                // Clear any previous timeout
+                if (timeoutRef.current) {
+                    clearTimeout(timeoutRef.current)
+                }
+            }
+        }
+    }
+
     // Initialize matching game
     useEffect(() => {
         if (activeTab === "match") {
             initializeMatchGame()
         }
     }, [activeTab])
+
+    // Clean up timeout on unmount
+    useEffect(() => {
+        return () => {
+            if (timeoutRef.current) {
+                clearTimeout(timeoutRef.current)
+            }
+        }
+    }, [])
 
     // Initialize the matching game
     const initializeMatchGame = () => {
@@ -166,6 +212,7 @@ const EverydayWords = () => {
         setIsCorrect(null)
         setScore(0)
         setAttempts(0)
+        setLastDetectedSign("")
     }
 
     // Calculate progress percentage in learn mode
@@ -216,9 +263,7 @@ const EverydayWords = () => {
                     >
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
                             <div className="flex flex-col items-center text-center">
-                                <h3 className="text-3xl font-bold text-blue-600 mb-4">
-                                    {everydayWords[currentWordIndex].word}
-                                </h3>
+                                <h3 className="text-3xl font-bold text-blue-600 mb-4">{everydayWords[currentWordIndex].word}</h3>
                                 <div className="w-64 h-64 flex justify-center items-center mb-4">
                                     <img
                                         src={everydayWords[currentWordIndex].imageUrl || "/placeholder.svg"}
@@ -228,9 +273,7 @@ const EverydayWords = () => {
                                 </div>
                             </div>
 
-
                             <div className="flex flex-col justify-center">
-
                                 <div className="bg-gray-50 p-6 rounded-lg">
                                     <h4 className="text-xl font-semibold text-gray-800 mb-2">Description</h4>
                                     <p className="text-gray-700 mb-4">{everydayWords[currentWordIndex].description}</p>
@@ -253,7 +296,6 @@ const EverydayWords = () => {
                                             "Sign 'like' then shake your head and change your facial expression to negative."}
                                     </p>
                                 </div>
-
                             </div>
                         </div>
                     </motion.div>
@@ -373,23 +415,32 @@ const EverydayWords = () => {
                             >
                                 {isCorrect === null ? (
                                     <>
-                                        <h3 className="text-xl font-semibold text-gray-700 mb-6">What word is being signed?</h3>
-                                        <img
-                                            src={everydayWords[currentWordIndex].imageUrl || "/placeholder.svg"}
-                                            alt="ASL sign"
-                                            className="w-64 h-64 object-contain mb-6"
-                                        />
-                                        <div className="w-full max-w-md mb-4">
-                                            <input
-                                                type="text"
-                                                value={userAnswer}
-                                                onChange={(e) => setUserAnswer(e.target.value)}
-                                                className="border border-gray-300 rounded-md px-4 py-2 w-full text-center text-xl"
-                                                placeholder="Enter word"
+                                        <h3 className="text-xl font-semibold text-gray-700 mb-6">Sign this word:</h3>
+                                        <div className="text-4xl font-bold text-blue-600 mb-6">{everydayWords[currentWordIndex].word}</div>
+
+                                        <div className="w-full max-w-md mb-6">
+                                            <SignDetector
+                                                currentLetter={everydayWords[currentWordIndex].word}
+                                                onDetection={handleDetectedSign}
                                             />
                                         </div>
-                                        <Button onClick={checkAnswer} size="lg">
-                                            Check Answer
+
+                                        {lastDetectedSign && (
+                                            <div className="mt-4 p-3 bg-blue-50 rounded-lg mb-4">
+                                                <p className="font-medium text-center">
+                                                    Last detected: <span className="text-blue-700 font-bold">{lastDetectedSign}</span>
+                                                </p>
+                                            </div>
+                                        )}
+
+                                        <Button
+                                            onClick={() => {
+                                                setIsCorrect(false)
+                                                setAttempts((prev) => prev + 1)
+                                            }}
+                                            size="lg"
+                                        >
+                                            Skip
                                         </Button>
                                     </>
                                 ) : (
@@ -408,10 +459,10 @@ const EverydayWords = () => {
                                                 <div className="flex flex-col items-center">
                                                     <div className="flex items-center mb-2">
                                                         <XCircle className="h-6 w-6 mr-2" />
-                                                        <span className="text-lg">Incorrect!</span>
+                                                        <span className="text-lg">Let's try another word!</span>
                                                     </div>
                                                     <div className="text-lg">
-                                                        The correct word is{" "}
+                                                        The correct word was{" "}
                                                         <span className="font-bold">"{everydayWords[currentWordIndex].word}"</span>
                                                     </div>
                                                 </div>
@@ -421,6 +472,7 @@ const EverydayWords = () => {
                                             onClick={() => {
                                                 setUserAnswer("")
                                                 setIsCorrect(null)
+                                                setLastDetectedSign("")
                                                 setCurrentWordIndex((currentWordIndex + 1) % everydayWords.length)
                                             }}
                                             size="lg"

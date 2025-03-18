@@ -6,6 +6,8 @@ import { motion, AnimatePresence } from "framer-motion"
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { Badge } from "@/components/ui/badge"
 import { CheckCircle, XCircle, Clock, RefreshCw } from "lucide-react"
+import SignDetector from "@/components/common/sign-detector"
+import Image from "next/image"
 
 const FingerspellingPractice = () => {
     const router = useRouter()
@@ -23,6 +25,7 @@ const FingerspellingPractice = () => {
     const timerRef = useRef<NodeJS.Timeout | null>(null)
     const inputRef = useRef<HTMLInputElement>(null)
     const [showingLetters, setShowingLetters] = useState(false)
+    const [lastDetectedSign, setLastDetectedSign] = useState("")
 
     // Word lists by category
     const wordLists = {
@@ -92,6 +95,27 @@ const FingerspellingPractice = () => {
     const nextWord = () => {
         getRandomWord()
         setTimer(0)
+    }
+
+    // Handle detected signs from the SignDetector component
+    const handleDetectedSign = (word: string) => {
+        if (!word) return // Skip empty detections
+
+        console.log("Detection received:", word)
+        setLastDetectedSign(word)
+
+        // Only check if we're not showing the word and haven't checked yet
+        if (!showWord && isCorrect === null) {
+            const detectedUpper = word.toUpperCase().trim()
+            const currentUpper = currentWord.toUpperCase().trim()
+
+            // Check if the detected sign matches the current word
+            if (detectedUpper === currentUpper) {
+                setIsCorrect(true)
+                setScore((prev) => prev + 1)
+                setCompletedWords((prev) => [...prev, currentWord])
+            }
+        }
     }
 
     // Timer effect
@@ -221,28 +245,35 @@ const FingerspellingPractice = () => {
                             <h3 className="text-xl font-semibold text-gray-700 mb-2">Memorize this word:</h3>
                             <div className="text-4xl font-bold text-blue-600 tracking-widest mb-4">{currentWord}</div>
                             <div className="flex space-x-2 justify-center min-h-[100px]">
-                                {showingLetters
-                                    ? currentWord.split("").map((letter, index) => (
-                                        <div key={index} className="w-16 h-16 flex justify-center">
+                                {showingLetters ? (
+                                    currentWord.split("").map((letter, index) => (
+                                        <div key={index} className="w-16 h-16 flex justify-center m-2">
                                             {index <= currentLetterIndex && (
-                                                <img
+                                                <Image
                                                     src={`https://www.lifeprint.com/asl101/fingerspelling/abc-gifs/${letter.toLowerCase()}.gif`}
                                                     alt={`ASL letter ${letter}`}
-                                                    className="w-16 h-16 object-contain"
+                                                    width={64}
+                                                    height={64}
+                                                    priority={true}
+                                                    className="object-contain"
                                                 />
                                             )}
                                         </div>
                                     ))
-                                    : currentWord
-                                        .split("")
-                                        .map((letter, index) => (
-                                            <img
-                                                key={index}
+                                ) : (
+                                    currentWord.split("").map((letter, index) => (
+                                        <div key={index} className="w-16 h-16 flex justify-center m-2">
+                                            <Image
                                                 src={`https://www.lifeprint.com/asl101/fingerspelling/abc-gifs/${letter.toLowerCase()}.gif`}
                                                 alt={`ASL letter ${letter}`}
-                                                className="w-16 h-16 object-contain"
+                                                width={64}
+                                                height={64}
+                                                priority={true}
+                                                className="object-contain"
                                             />
-                                        ))}
+                                        </div>
+                                    ))
+                                )}
                             </div>
                             <p className="text-sm text-gray-500 mt-2">
                                 {showingLetters
@@ -257,22 +288,23 @@ const FingerspellingPractice = () => {
                             animate={{ opacity: 1, y: 0 }}
                             className="flex flex-col items-center"
                         >
-                            <h3 className="text-xl font-semibold text-gray-700 mb-4">Type the word you memorized:</h3>
+                            <h3 className="text-xl font-semibold text-gray-700 mb-4">Sign the word you memorized:</h3>
                             <div className="w-full max-w-md mb-4">
-                                <input
-                                    type="text"
-                                    value={userInput}
-                                    onChange={(e) => setUserInput(e.target.value)}
-                                    className="border border-gray-300 rounded-md px-4 py-2 w-full text-center text-xl"
-                                    placeholder="Type the word"
-                                    ref={inputRef}
-                                    disabled={isCorrect !== null}
-                                />
+                                <p className="text-center text-gray-700 mb-4">Make the sign for the word you memorized</p>
+                                <SignDetector currentLetter={currentWord} onDetection={handleDetectedSign} />
+
+                                {lastDetectedSign && (
+                                    <div className="mt-4 p-3 bg-blue-50 rounded-lg">
+                                        <p className="font-medium text-center">
+                                            Last detected: <span className="text-blue-700 font-bold">{lastDetectedSign}</span>
+                                        </p>
+                                    </div>
+                                )}
                             </div>
 
                             {isCorrect === null ? (
                                 <Button onClick={checkAnswer} size="lg">
-                                    Check Answer
+                                    Skip
                                 </Button>
                             ) : (
                                 <div className="flex flex-col items-center">
@@ -352,6 +384,7 @@ const FingerspellingPractice = () => {
                     <li>Start with shorter words and gradually increase difficulty</li>
                     <li>Pay attention to hand positioning and transitions between letters</li>
                     <li>Use context clues when reading fingerspelling in conversation</li>
+                    <li>Position yourself clearly in front of the camera for better sign detection</li>
                 </ul>
             </div>
 

@@ -245,9 +245,7 @@ const FingerspellingWithDetection = () => {
                         </motion.div>
 
                         <div className="bg-gray-50 p-6 rounded-lg shadow-lg">
-                            <h3 className="text-xl font-bold text-gray-800 mb-4">Practice with Camera Detection</h3>
-
-                            <p className="text-gray-700 mb-4">
+                            <p className="text-gray-700 mb-4 font-semibold">
                                 Make the sign for letter "{currentLetter}" and our AI will detect it.
                             </p>
 
