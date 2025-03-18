@@ -24,7 +24,7 @@ function Word() {
   return (
     <>
       <Head>
-        <title>{word.word ? word.word : ""} Silent Voice</title>
+        <title>{word.word ? word.word : ""} Sign All</title>
       </Head>
 
       <div className={`${poppins.className} min-h-screen bg-box`}>
