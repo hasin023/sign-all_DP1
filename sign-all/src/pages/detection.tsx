@@ -122,6 +122,7 @@ function SignDetection() {
 
   function stopCam() {
     setEnableCam(false);
+    setWords([])
   }
 
   function processVideo() {
@@ -326,12 +327,6 @@ function SignDetection() {
                     className="w-full h-full object-cover"
                     alt="AI detection visualization"
                   />
-                </div>
-                <div className="mt-4 bg-white p-4 rounded-lg shadow-md">
-                  <h3 className="text-lg font-semibold text-gray-800 mb-2">AI Visualization</h3>
-                  <p className="text-gray-600 text-sm">
-                    This image shows the AI model's visual analysis of your sign gestures, highlighting the detected hand positions and movement patterns.
-                  </p>
                 </div>
               </div>
             )}
